@@ -1,0 +1,193 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "fac7b25e5c124cac94b2aaaf48007e37",
+    "packages": [
+        {
+            "name": "phphleb/debugpan",
+            "version": "v2.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phphleb/debugpan.git",
+                "reference": "f7a2278612d2ab6025fa1f0060f2b8e9a7f0a88d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phphleb/debugpan/zipball/f7a2278612d2ab6025fa1f0060f2b8e9a7f0a88d",
+                "reference": "f7a2278612d2ab6025fa1f0060f2b8e9a7f0a88d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2",
+                "phphleb/framework": ">=2.0.0",
+                "phphleb/nicejson": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Phphleb\\Debugpan\\": "/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Foma Tuturov",
+                    "email": "fomiash@yandex.ru"
+                }
+            ],
+            "description": "Debug Panel for PHP Framework HLEB2",
+            "homepage": "https://hleb2framework.ru",
+            "support": {
+                "source": "https://github.com/phphleb/debugpan/tree/v2.0.4"
+            },
+            "time": "2025-02-20T17:32:33+00:00"
+        },
+        {
+            "name": "phphleb/framework",
+            "version": "v2.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phphleb/framework.git",
+                "reference": "16b168825b9f8aca1f80f9426f870f04fbcd4ef9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phphleb/framework/zipball/16b168825b9f8aca1f80f9426f870f04fbcd4ef9",
+                "reference": "16b168825b9f8aca1f80f9426f870f04fbcd4ef9",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2.0",
+                "phphleb/debugpan": "^2.0.0",
+                "phphleb/nicejson": "*",
+                "phphleb/salt": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Hleb\\": "/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Foma Tuturov",
+                    "email": "fomiash@yandex.ru"
+                }
+            ],
+            "description": "Engine for Framework HLEB2",
+            "homepage": "https://hleb2framework.ru",
+            "keywords": [
+                "framework",
+                "hleb2",
+                "php",
+                "php framework",
+                "phphleb"
+            ],
+            "support": {
+                "source": "https://github.com/phphleb/framework/tree/v2.1.1"
+            },
+            "time": "2025-05-28T07:09:43+00:00"
+        },
+        {
+            "name": "phphleb/nicejson",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phphleb/nicejson.git",
+                "reference": "b49ae98a187e52535f3f5b4437e87fed6262c3a9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phphleb/nicejson/zipball/b49ae98a187e52535f3f5b4437e87fed6262c3a9",
+                "reference": "b49ae98a187e52535f3f5b4437e87fed6262c3a9",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": ">=8.2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Phphleb\\Nicejson\\": "/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Foma Tuturov",
+                    "email": "fomiash@yandex.ru"
+                }
+            ],
+            "description": "Convert json to readable form",
+            "support": {
+                "source": "https://github.com/phphleb/nicejson/tree/1.0.0"
+            },
+            "time": "2024-02-06T21:33:27+00:00"
+        },
+        {
+            "name": "phphleb/salt",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phphleb/salt.git",
+                "reference": "3f8c5623253b242e531356d7264579c37ef2274c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phphleb/salt/zipball/3f8c5623253b242e531356d7264579c37ef2274c",
+                "reference": "3f8c5623253b242e531356d7264579c37ef2274c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2.0"
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Foma Tuturov",
+                    "email": "fomiash@yandex.ru"
+                }
+            ],
+            "description": "Setting up autocomplete for PHP Framework HLEB2",
+            "keywords": [
+                "autocomplete",
+                "hleb2",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/phphleb/salt/issues",
+                "source": "https://github.com/phphleb/salt/tree/1.0.0"
+            },
+            "time": "2024-10-24T08:30:31+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {},
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=8.2.0"
+    },
+    "platform-dev": {},
+    "plugin-api-version": "2.6.0"
+}
