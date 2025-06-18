@@ -267,3 +267,124 @@ Route::group('/admin/shop', function() {
 7.  **Настройте Telegram команды** в соответствующем контроллере (`ProductController` или выделенный `BotController`), который будет обрабатывать вебхуки от Telegram. Свяжите команды (`/start`, `/catalog`, `/cart` и т.д.) с методами ваших сервисов и контроллеров.
 
 Это руководство предоставляет основу для структурирования вашего проекта интернет-магазина. Детальная реализация каждого компонента потребует дополнительной проработки. Удачи в разработке!
+---
+
+## Раздел 6: Общая Структура Проекта (Пример)
+
+Ниже представлена примерная общая структура директорий проекта, включая существующие элементы и предлагаемые новые компоненты для интернет-магазина. Это поможет вам визуализировать, как модули магазина будут интегрированы в проект Hleb.
+
+```text
+.
+├── .env
+├── .gitignore
+├── LICENSE
+├── README.md (этот файл)
+├── docker-compose.yml
+├── docker/
+│   ├── Dockerfile
+│   ├── nginx.conf
+│   ├── root/
+│   │   ├── .bash_profile
+│   │   ├── .bashrc
+│   │   └── ... (другие скрипты)
+│   ├── src/
+│   │   └── ... (конфигурационные PHP файлы для Docker)
+│   └── xdebug.ini
+└── hleb/
+    ├── .gitattributes
+    ├── .gitignore
+    ├── .php-cs-fixer.php
+    ├── app/
+    │   ├── Bootstrap/
+    │   │   └── ... (существующие файлы Bootstrap)
+    │   ├── Commands/
+    │   │   ├── DefaultTask.php
+    │   │   └── RotateLogs.php
+    │   ├── Controllers/
+    │   │   └── DefaultController.php
+    │   ├── Middlewares/
+    │   │   └── DefaultMiddleware.php
+    │   ├── Models/
+    │   │   └── DefaultModel.php
+    │   └── Shop/  # <-- Новая директория для модуля магазина
+    │       ├── Common/
+    │       │   └── BaseShopController.php
+    │       ├── Product/
+    │       │   ├── Controllers/
+    │       │   │   └── ProductController.php
+    │       │   ├── Models/
+    │       │   │   └── Product.php
+    │       │   └── Services/
+    │       │       ├── ProductService.php
+    │       │       ├── ProductSearchService.php
+    │       │       └── ProductFilterService.php
+    │       ├── Cart/
+    │       │   ├── Controllers/
+    │       │   │   └── CartController.php
+    │       │   └── Services/
+    │       │       └── CartService.php
+    │       ├── Order/
+    │       │   ├── Controllers/
+    │       │   │   └── OrderController.php
+    │       │   ├── Models/
+    │       │   │   ├── Order.php
+    │       │   │   └── OrderItem.php
+    │       │   └── Services/
+    │       │       └── OrderService.php
+    │       ├── User/ # Для "Избранного" и других пользовательских функций
+    │       │   ├── Controllers/
+    │       │   │   └── FavoriteController.php
+    │       │   ├── Models/
+    │       │   │   └── Favorite.php
+    │       │   └── Services/
+    │       │       └── FavoriteService.php
+    │       ├── Admin/ # Модуль административной панели
+    │       │   ├── Controllers/
+    │       │   │   ├── AdminDashboardController.php
+    │       │   │   ├── AdminProductController.php
+    │       │   │   ├── AdminCategoryController.php
+    │       │   │   └── AdminOrderController.php
+    │       │   └── Views/  # (или hleb/resources/views/admin/)
+    │       │       └── ... (шаблоны для админ-панели)
+    │       └── Ai/ # Модуль для интеграции с ИИ
+    │           ├── Controllers/
+    │           │   └── AiChatController.php
+    │           └── Services/
+    │               └── AiChatService.php
+    ├── config/
+    │   ├── common.php
+    │   ├── database.php
+    │   ├── main.php
+    │   ├── system.php
+    │   ├── shop.php        # <-- Новый конфигурационный файл для магазина
+    │   └── telegram.php    # <-- Новый/обновленный конфигурационный файл для Telegram
+    ├── console   # Исполняемый файл консоли Hleb
+    ├── public/   # Публичная директория, доступная через веб-сервер
+    │   ├── .htaccess
+    │   ├── css/
+    │   ├── images/
+    │   ├── js/
+    │   ├── favicon.ico
+    │   ├── index.php       # Главный входной файл Hleb
+    │   ├── robots.txt
+    │   └── shop_mini_app/  # <-- Новая директория для статических файлов Mini App
+    │       ├── index.html
+    │       ├── css/
+    │       │   └── main.css
+    │       ├── js/
+    │       │   └── app.js
+    │       └── images/
+    ├── readme.md (файл readme.md фреймворка Hleb, не основной README проекта)
+    ├── resources/
+    │   └── views/          # Директория для шаблонов Hleb (если используются)
+    │       ├── default.php
+    │       ├── error.php
+    │       └── admin/      # (альтернативное место для шаблонов админ-панели, если не SPA)
+    │           └── ...
+    ├── routes/
+    │   └── map.php         # Файл определения маршрутов (будет значительно изменен)
+    └── vendor/
+        └── ... (директория зависимостей Composer)
+
+```
+**Примечание:** Некоторые стандартные файлы и директории Hleb (например, содержимое `Bootstrap`, некоторые файлы в `public/css`, `js`, `images`) показаны сокращенно (`...`) для наглядности основной структуры. Ключевые новые дополнения для интернет-магазина отмечены комментариями `# <-- ...`.
