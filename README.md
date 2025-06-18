@@ -1,231 +1,167 @@
-# Toaster
+# Настройка и Разработка Telegram Бота с Mini App в Проекте Hleb (без создания новых файлов)
 
-[![HLEB2](https://img.shields.io/badge/HLEB-2-darkcyan)](https://github.com/phphleb/hleb) [![License: MIT](https://img.shields.io/badge/License-MIT%20(Free)-brightgreen.svg)](https://github.com/phphleb/hleb/blob/master/LICENSE)
+Это руководство описывает, как интегрировать Telegram бота и Mini App (веб-приложение Telegram) в существующий проект на фреймворке Hleb, **не создавая новых файлов или директорий, а модифицируя только существующие.**
 
-A template for local development using the [HLEB2](https://github.com/phphleb/hleb) framework.
+## Предупреждение о Сложности
 
-## Recipe
+Интеграция сложного функционала, такого как Telegram бот и особенно Mini App, в существующие файлы без возможности создания новых, является **крайне сложной задачей** и может привести к значительному увеличению размера и запутанности этих файлов. Особенно это касается Mini App: если HTML, CSS и JavaScript не могут быть созданы как отдельные файлы в `hleb/public/`, их придется встраивать непосредственно в PHP код, что крайне неудобно для разработки и поддержки. **Рекомендуется уточнить, возможно ли создание статических файлов (.html, .css, .js) хотя бы в директории `hleb/public/mini_app/`. Если да, это значительно упростит разработку Mini App.** Данное руководство исходит из самого строгого толкования ограничений.
 
-- [Docker](https://www.docker.com)
-- this repository
-- `docker-compose up -d`
+---
 
-## Composition
+## Раздел 1: Настройка Docker и Запуск Проекта Hleb
 
-<details>
-  <summary>Development repository</summary>
+Перед началом разработки убедитесь, что ваш основной проект Hleb корректно настроен и запущен с использованием Docker. Существующая информация в этом README (разделы "Recipe", "Composition", "Local server") уже описывает основы. Краткое повторение ключевых моментов:
 
-  After launching the containers, the `hleb` directory will be created in the root of the project
-  with the new [HLEB2](https://packagist.org/packages/phphleb/hleb) project.
-</details>
-
-<details>
-  <summary>Local server</summary>
-
-  Default [localhost:5125](http://localhost:5125).
-  If you are not satisfied with the port, change `SERVER_EXTERNAL_PORT` in the `.env` file.
-</details>
-
-<details>
-  <summary>MariaDB</summary>
-
-  [About MariaDB](https://mariadb.org/)  
-  In the new project `hleb` the file will be automatically created
-  `/config/database-local.php` with the configuration for connecting to the DBMS.
-</details>
-
-<details>
-  <summary>phpMyAdmin</summary>
-
-  [About phpMyAdmin](https://www.phpmyadmin.net/)  
-  Default [localhost:8080](http://localhost:8080).
-  Authorization is automatic.
-  If you are not satisfied with the port, change `PMA_EXTERNAL_PORT` in the `.env` file.
-</details>
-
-<details>
-  <summary>Xdebug</summary>
-
-  [About Xdebug](https://xdebug.org/)  
-  The configuration file is `docker/xdebug.ini`.
-  The default port is `9003`.
-  In `docker-compose.yml` the server is specified as `serverName`.
-  Defaults to `serverName=toaster`.
-</details>
-
-<details>
-  <summary>PHP Coding Standards Fixer</summary>
-
-  [About PHP CS Fixer](https://cs.symfony.com/)  
-  The [configuration](https://cs.symfony.com/doc/config.html) from `docker/.php-cs-fixer.php` is copied to `/hleb`.
-  Cheat sheet on the rules [here](https://mlocati.github.io/php-cs-fixer-configurator/#version:3.7).
-  After creating a new project, it automatically edits files using rules.
-</details>
-
-## HLOGIN
-User authorization module.
-
-[About HLOGIN](https://github.com/phphleb/hlogin)
-
-Not installed by default, but can be easily added to your project.
-Connect to the `php` service container and execute `./add-hlogin.sh`.
-
-During installation, you will need to answer three questions from the system:
-
-1. Preferred interface style.
-2. Administrator's email.
-3. Administrator password.
-
-## Telegram Bot and Mini App Development
-
-This guide walks you through setting up and developing a Telegram bot with a Mini App (Web App) within this Hleb project.
-
-**Step 1: Ensure Your Hleb Environment is Running**
-
-Before you begin bot development, make sure your basic Hleb project environment is up and running using Docker.
-- Follow the instructions in the "## Recipe" section (e.g., run `docker-compose up -d`).
-- Confirm you can access your Hleb application locally (usually at `http://localhost:5125`, as noted in "## Composition" > "Local server").
-
-**Step 2: Configure Environment Variables for the Bot**
-
-You'll need to add credentials for your Telegram bot to the `.env` file at the root of the project. If `.env` doesn't exist, you might need to copy it from a sample like `.env.example` if provided (though this project structure doesn't explicitly show one, ensure your `.env` is correctly set up for Hleb itself).
-
-Add the following lines to your `.env` file, replacing placeholders with your actual values:
-
-```env
-TELEGRAM_BOT_TOKEN=your_actual_telegram_bot_token
-TELEGRAM_WEBHOOK_URL=your_public_webhook_url_from_localtunnel_in_step_6
-MINI_APP_URL=your_public_mini_app_url_from_localtunnel_in_step_6
-# You can also add your bot's username if needed for logic
-# TELEGRAM_BOT_USERNAME=your_bot_username
-```
-
-**Step 3: Add a PHP Telegram Bot SDK**
-
-To interact with the Telegram Bot API, you'll need a PHP library. A common choice is `irazasyed/telegram-bot-sdk` or `php-telegram-bot/core`.
-
-1.  Open your `hleb/composer.json` file.
-2.  Add the chosen SDK to the `require` section. For example, for `irazasyed/telegram-bot-sdk`:
-    ```json
-    "require": {
-        "phphleb/framework": "^2.0",
-        "irazasyed/telegram-bot-sdk": "^3.0" // Check for the latest stable version
-        // ... other dependencies
-    }
-    ```
-3.  Install the SDK by running Composer from within your Docker PHP container or your local environment if you have PHP/Composer set up and mapped to the `hleb` directory:
+1.  **Запустите Docker контейнеры:**
+    В корневой директории вашего проекта выполните команду:
     ```bash
-    # If accessing via Docker (assuming your php service is named 'php'):
-    docker-compose exec php composer update
-    # Or, if you have PHP/Composer locally and hleb/ is your working directory:
-    # composer update
+    docker-compose up -d
     ```
+2.  **Проверьте доступность проекта:**
+    Ваш проект Hleb должен быть доступен в браузере по адресу, указанному в файле `.env` (переменная `SERVER_EXTERNAL_PORT`). По умолчанию это обычно `http://localhost:5125`.
 
-**Step 4: Create Bot and Mini App File Structure**
+---
 
-All new files and directories for the bot and Mini App will be created inside the `hleb` directory, adhering to Hleb's conventions.
+## Раздел 2: Настройка Локального Туннелирования (Аналог Ngrok)
 
-1.  **Bot Controllers** (for handling incoming requests):
-    - Create directory: `hleb/app/Controllers/Bot/`
-    - Create file: `hleb/app/Controllers/Bot/TelegramWebhookController.php` (handles webhook requests from Telegram)
-    - Create file (optional): `hleb/app/Controllers/Bot/MiniAppController.php` (if your Mini App needs dedicated backend endpoints)
+Для того чтобы Telegram мог отправлять обновления (вебхуки) на ваш локальный сервер, и чтобы Mini App был доступен извне, необходимо использовать службу туннелирования. `Localtunnel` является одной из таких служб.
 
-2.  **Bot Services** (for business logic):
-    - Create directory: `hleb/app/Services/` (if it doesn't already exist)
-    - Create directory: `hleb/app/Services/Bot/`
-    - Create file: `hleb/app/Services/Bot/TelegramBotService.php` (core bot logic, interaction with Telegram API)
-    - Create file: `hleb/app/Services/Bot/MiniAppService.php` (backend logic for your Mini App)
-
-3.  **Bot Configuration**:
-    - Create file: `hleb/config/telegram.php`
-      This file will load your bot's settings (like the token from `.env`). Example content:
-      ```php
-      <?php // hleb/config/telegram.php
-      return [
-          'bot_token' => env('TELEGRAM_BOT_TOKEN'),
-          'webhook_url' => env('TELEGRAM_WEBHOOK_URL'),
-          'mini_app_base_url' => env('MINI_APP_URL'),
-          // 'bot_username' => env('TELEGRAM_BOT_USERNAME'),
-      ];
-      ```
-
-4.  **Mini App Frontend Files**:
-    - Create directory: `hleb/public/mini_app/`
-    - Create file: `hleb/public/mini_app/index.html` (main page for your Mini App)
-    - Create directory: `hleb/public/mini_app/css/`
-    - Create file: `hleb/public/mini_app/css/style.css`
-    - Create directory: `hleb/public/mini_app/js/`
-    - Create file: `hleb/public/mini_app/js/script.js`
-    - Create directory (optional): `hleb/public/mini_app/assets/` (for images, fonts, etc.)
-
-5.  **Bot Console Commands** (Optional but Recommended):
-    - Create directory: `hleb/app/Commands/Bot/`
-    - Create file: `hleb/app/Commands/Bot/SetWebhookCommand.php` (to help set your bot's webhook URL with Telegram)
-    - Create file: `hleb/app/Commands/Bot/BotInfoCommand.php` (to test bot token or get info)
-
-**Step 5: Define Bot Routes**
-
-You need to tell Hleb how to direct incoming web requests to your bot controller.
-
-1.  Open `hleb/routes/map.php`.
-2.  Add a route for your Telegram webhook. This URL must match what you set in `TELEGRAM_WEBHOOK_URL` (without the domain part, as Hleb handles that). For example:
-    ```php
-    // Existing routes
-    // Route::get('/', view('default'))->name('homepage');
-
-    // Add this for the Telegram Bot Webhook
-    Route::post('/telegram/webhook', [App\Controllers\Bot\TelegramWebhookController::class, 'handle'])->name('telegram.webhook');
-
-    // Optional: Add any routes needed for your Mini App's backend API
-    // Route::post('/api/mini_app/data', [App\Controllers\Bot\MiniAppController::class, 'saveData'])->name('mini_app.save.data');
-    ```
-
-**Step 6: Make Your Local Server Accessible (Tunneling)**
-
-Telegram needs to send updates to a public URL. When developing locally, your server (`localhost:5125`) is not public. A tunneling service like `localtunnel` can create a temporary public URL for you.
-
-1.  **Install `localtunnel`** (if you haven't already):
-    Requires Node.js & npm. Run on your host machine (not inside Docker):
+1.  **Установка `localtunnel`** (требуется Node.js и npm):
+    Выполните на вашем основном компьютере (не внутри Docker контейнера):
     ```bash
     npm install -g localtunnel
     ```
-2.  **Run `localtunnel`**:
-    - Ensure your Hleb project (Docker) is running and accessible on `localhost:5125` (or the port set by `SERVER_EXTERNAL_PORT` in `.env`).
-    - Open a new terminal on your host machine and run:
-      ```bash
-      lt --port 5125
-      # Or use the port from your .env: lt --port ${SERVER_EXTERNAL_PORT:-5125}
-      ```
-3.  **Get Your Public URL**:
-    `localtunnel` will output a URL like `https://yoursubdomain.loca.lt`. This is your temporary public base URL.
-4.  **Update `.env`**:
-    - Set `TELEGRAM_WEBHOOK_URL` to this public URL + your webhook path: `TELEGRAM_WEBHOOK_URL=https://yoursubdomain.loca.lt/telegram/webhook`
-    - Set `MINI_APP_URL` to this public URL + your Mini App path: `MINI_APP_URL=https://yoursubdomain.loca.lt/mini_app/`
-    *(You might need to restart your Hleb application or ensure it re-reads the .env if you changed these while it was running, though typically config is cached).*
-5.  **Set Your Webhook with Telegram**:
-    - You need to tell Telegram to send bot updates to your `TELEGRAM_WEBHOOK_URL`. You can do this:
-        - Programmatically using the `SetWebhookCommand.php` you created (you'll need to implement its logic using the Bot SDK).
-        - Manually via a curl request or a simple PHP script using the Bot SDK's `setWebhook` method.
-        - Example using curl (replace with your actual token and URL):
-          ```bash
-          curl -F "url=https://yoursubdomain.loca.lt/telegram/webhook" https://api.telegram.org/botYOUR_TELEGRAM_BOT_TOKEN/setWebhook
-          ```
+2.  **Запуск `localtunnel`**:
+    Убедитесь, что ваш Hleb проект (Docker) запущен и доступен на `localhost:5125` (или на порту, указанном в `SERVER_EXTERNAL_PORT` в `.env`).
+    В новом окне терминала на вашем компьютере выполните:
+    ```bash
+    lt --port 5125
+    # Или используйте порт из .env: lt --port ${SERVER_EXTERNAL_PORT:-5125}
+    ```
+3.  **Получение публичного URL**:
+    `localtunnel` выдаст вам URL вида `https://yoursubdomain.loca.lt`. Это ваш временный публичный базовый URL. Этот URL будет использоваться для настройки вебхука Telegram.
+4.  **Обновление файла `.env`**:
+    Используйте этот URL для настройки переменных окружения (подробнее в Разделе 4).
 
-**Important Tunneling Notes:**
-  - **Accessibility:** Verify `localtunnel` and `loca.lt` are accessible in Russia. If not, explore alternatives like `Serveo.net`, `Tunnelmole`, or `localhost.run`.
-  - **Dynamic URL:** `localtunnel` usually gives a new URL each time. For a fixed URL, explore paid options or other services.
-  - **HTTPS:** Telegram requires HTTPS for webhooks, which `localtunnel` provides.
+**Важные замечания по туннелированию:**
+*   **Доступность в России:** Убедитесь, что `localtunnel` и его домен (`loca.lt`) доступны из вашей сети. Если нет, рассмотрите альтернативы, такие как `Serveo.net`, `Tunnelmole` или `localhost.run`.
+*   **Динамический URL:** `localtunnel` обычно предоставляет новый URL при каждом запуске. Для постоянного URL могут потребоваться платные функции или другие сервисы.
+*   **HTTPS:** Telegram требует HTTPS для вебхуков, что `localtunnel` обеспечивает.
 
-**Step 7: Start Developing Your Bot and Mini App**
+---
 
--   **Bot Logic**:
-    -   Start by implementing the `handle()` method in `hleb/app/Controllers/Bot/TelegramWebhookController.php`. This method will receive updates from Telegram.
-    -   Pass the update data to `hleb/app/Services/Bot/TelegramBotService.php` to process commands, messages, etc.
-    -   Use the Telegram Bot SDK (configured in your service, likely using the token from `config('telegram.bot_token')`) to send messages, keyboards, etc.
--   **Mini App Frontend**:
-    -   Develop your Mini App's UI and logic in `hleb/public/mini_app/index.html`, `script.js`, and `style.css`.
-    -   The Mini App will be launched via a button or link sent by your bot, using the `MINI_APP_URL`.
--   **Mini App Backend (Optional)**:
-    -   If your Mini App needs to save data or perform actions on the server, implement these in `hleb/app/Controllers/Bot/MiniAppController.php` and/or `hleb/app/Services/Bot/MiniAppService.php`. Define routes for these actions in `hleb/routes/map.php`.
+## Раздел 3: Интеграция Telegram Бота и Mini App в Существующие Файлы
 
-This structured approach should help you get your Telegram bot and Mini App running within the Hleb framework. Remember to consult the Hleb documentation and the documentation for your chosen Telegram Bot SDK for more detailed information.
+Вся логика бота и Mini App будет добавлена путем модификации следующих существующих файлов в директории `hleb/`:
+
+1.  **`hleb/config/main.php`** (или `hleb/config/common.php`)
+    *   **Роль:** Файл конфигурации проекта Hleb.
+    *   **Модификации для бота:** В массив, возвращаемый этим файлом, будет добавлен новый ключ (например, `'bot_settings'`). Этот ключ будет содержать массив с настройками бота, загружаемыми из файла `.env` (см. Раздел 4).
+        ```php
+        // Пример добавления в hleb/config/main.php
+        // Внутри возвращаемого массива:
+        // ... существующие настройки ...
+        'bot_settings' => [
+            'token' => env('TELEGRAM_BOT_TOKEN', ''),
+            'webhook_path' => env('TELEGRAM_WEBHOOK_PATH', '/telegram_webhook_endpoint'), // Путь для вебхука без домена
+            // 'admin_id' => env('TELEGRAM_ADMIN_ID', 0), // Пример
+        ],
+        // ... другие существующие настройки ...
+        ```
+
+2.  **`hleb/app/Controllers/DefaultController.php`**
+    *   **Роль:** Стандартный контроллер Hleb, обрабатывающий HTTP-запросы. В данном проекте он изначально содержит метод `index()`.
+    *   **Модификации для бота:** Этот файл будет содержать основную логику обработки вебхуков от Telegram, взаимодействия с Telegram Bot API, а также логику для Mini App.
+        *   **Новые публичные методы (примеры):**
+            *   `public function telegramWebhook()`: Будет принимать и обрабатывать входящие JSON-обновления от Telegram. Сюда будет направляться запрос с URL вебхука.
+            *   `public function serveMiniAppHtml()`: Будет генерировать и возвращать HTML-код для Mini App. **HTML, CSS и JS для Mini App будут встроены как строки непосредственно в этом методе или в вызываемых им приватных методах.**
+            *   `public function handleMiniAppApi(string $action = '')`: Будет обрабатывать API-запросы от Mini App (если Mini App требует взаимодействия с бэкендом).
+        *   **Новые приватные методы:** Для структурирования логики (инициализация SDK, обработка команд, сообщений, колбэков, генерация контента Mini App и т.д.) внутри `DefaultController.php`.
+        *   **Интеграция Telegram Bot SDK:** Экземпляр SDK будет создан и использован здесь для отправки сообщений, управления клавиатурами и т.д., используя токен из конфигурации.
+
+3.  **`hleb/routes/map.php`**
+    *   **Роль:** Файл определения маршрутов Hleb. Изначально содержит маршрут для главной страницы.
+    *   **Модификации для бота:** Будут добавлены новые маршруты, чтобы связать URL-адреса с новыми публичными методами в `DefaultController.php`.
+        ```php
+        // Пример добавления маршрутов в hleb/routes/map.php
+        // Route::get('/', view('default'))->name('homepage'); // Существующий маршрут
+
+        // Маршрут для вебхука Telegram
+        // Путь должен соответствовать 'webhook_path' из bot_settings в main.php
+        Route::post(config('main.bot_settings.webhook_path', '/telegram_webhook_endpoint'), [DefaultController::class, 'telegramWebhook'])->name('bot.webhook');
+
+        // Маршрут для отображения Mini App
+        Route::get('/miniapp', [DefaultController::class, 'serveMiniAppHtml'])->name('miniapp.entry');
+
+        // Маршруты для API Mini App (если необходимо)
+        // Route::post('/miniapp/api/{action}', [DefaultController::class, 'handleMiniAppApi'])->name('miniapp.api');
+        ```
+
+4.  **`hleb/app/Commands/DefaultTask.php`** (или другой существующий файл команд, например, `RotateLogs.php`, если `DefaultTask.php` не подходит)
+    *   **Роль:** Для выполнения консольных команд Hleb.
+    *   **Модификации для бота (опционально, но рекомендуется):** Можно добавить публичный метод для административных задач, например, для установки URL вебхука Telegram.
+        *   Пример метода: `public function setBotWebhook(string $fullWebhookUrl)`
+        *   Этот метод будет использовать Telegram Bot SDK для отправки запроса `setWebhook` в Telegram.
+        *   Вызов через консоль (пример): `php console default:set-bot-webhook https://yoursubdomain.loca.lt/telegram_webhook_endpoint` (имя команды может отличаться в зависимости от структуры Hleb).
+
+---
+
+## Раздел 4: Переменные Окружения для Бота
+
+Добавьте следующие переменные в ваш файл `.env` в корне проекта:
+
+```env
+TELEGRAM_BOT_TOKEN="ВАШ_ТЕЛЕГРАМ_БОТ_ТОКЕН"
+
+# Путь для вебхука (без домена), должен совпадать с тем, что настроен в hleb/routes/map.php
+# и используется в hleb/config/main.php -> bot_settings -> webhook_path
+TELEGRAM_WEBHOOK_PATH="/telegram_webhook_endpoint"
+
+# TELEGRAM_ADMIN_ID="ВАШ_ТЕЛЕГРАМ_ID_КАК_АДМИНА" # Опционально, для административных функций
+```
+**Примечание:** Полный URL вебхука (например, от `localtunnel`) будет использоваться при вызове команды `setBotWebhook` (см. Раздел 3, пункт 4). Приложение Hleb будет знать только путь (`TELEGRAM_WEBHOOK_PATH`).
+
+---
+
+## Раздел 5: Установка Зависимостей (PHP Telegram Bot SDK)
+
+Для взаимодействия с Telegram API потребуется PHP библиотека (SDK).
+
+1.  Откройте файл `hleb/composer.json`.
+2.  Добавьте выбранный SDK в секцию `require`. Например, для `irazasyed/telegram-bot-sdk`:
+    ```json
+    "require": {
+        "phphleb/framework": "^2.0",
+        "irazasyed/telegram-bot-sdk": "^3.0" // Замените на актуальную стабильную версию SDK
+        // ... другие существующие зависимости
+    }
+    ```
+3.  Установите SDK. Если вы работаете с Docker, и ваш PHP сервис в `docker-compose.yml` называется `php`, выполните:
+    ```bash
+    docker-compose exec php composer update
+    ```
+    Если PHP и Composer установлены у вас локально, и `hleb/` является вашей текущей рабочей директорией:
+    ```bash
+    cd hleb && composer update && cd ..
+    ```
+
+---
+
+## Начало Разработки и Ключевые Моменты
+
+*   **Логика Бота:**
+    *   Основная точка входа – метод `telegramWebhook()` в `hleb/app/Controllers/DefaultController.php`.
+    *   Внутри этого метода получайте данные (`$request = $this->request()->getJson();`), анализируйте их и вызывайте другие приватные методы `DefaultController` для обработки различных команд, типов сообщений и т.д.
+    *   Используйте Telegram Bot SDK (инициализированный с токеном из `config('main.bot_settings.token')`) для отправки ответов.
+*   **Mini App (встроенный в PHP):**
+    *   HTML, CSS, и JavaScript для Mini App должны быть определены как строки внутри метода `serveMiniAppHtml()` (или связанных приватных методов) в `DefaultController.php`.
+    *   Этот метод должен возвращать объект `Hleb\Constructor\Data\View` или просто строку с HTML.
+    *   Mini App будет доступен по URL, определенному в `hleb/routes/map.php` (например, `/miniapp`).
+    *   **Это очень сложный подход для сколько-нибудь функционального Mini App.** Настоятельно рекомендуется уточнить возможность создания отдельных статических файлов для Mini App в `hleb/public/`.
+*   **Установка вебхука:** После запуска `localtunnel` и получения публичного URL (например, `https://abc.loca.lt`), сформируйте полный URL вебхука (например, `https://abc.loca.lt/telegram_webhook_endpoint`). Установите его, используя консольную команду (если реализовали) или другой метод (например, через `curl` или временный скрипт).
+    Пример `curl` (замените `ВАШ_ТОКЕН` и `ВАШ_ПОЛНЫЙ_URL_ВЕБХУКА`):
+    ```bash
+    curl -F "url=ВАШ_ПОЛНЫЙ_URL_ВЕБХУКА" https://api.telegram.org/botВАШ_ТОКЕН/setWebhook
+    ```
+
+Помните, что разработка в таких строгих ограничениях требует тщательного планирования и может быть сложной в отладке и поддержке. Удачи!
