@@ -19,7 +19,8 @@
     ],
     "require": {
         "php": ">=8.2.0",
-        "phphleb/framework": "^2.0.0"
+        "phphleb/framework": "^2.0.0",
+        "irazasyed/telegram-bot-sdk": "^3.9"
     },
     "autoload": {
         "classmap": [
