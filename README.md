@@ -43,35 +43,51 @@
 3.  Выполните `docker-compose exec php composer update` (где `php` – имя вашего PHP сервиса в Docker).
 
 ### 1.5. Настройка Переменных Окружения (`.env`)
-В корневом файле `.env` определите:
-```env
-TELEGRAM_BOT_TOKEN="ВАШ_ТЕЛЕГРАМ_БОТ_ТОКЕН"
-# TELEGRAM_WEBHOOK_BASE_URL="URL_ОТ_LOCALTUNNEL" # Больше не используется напрямую, URL получается автоматически
-TELEGRAM_WEBHOOK_PATH="/telegram_bot_webhook" # Путь для вебхука, используется сервисом webhook-init
-MINI_APP_BASE_URL="URL_ОТ_LOCALTUNNEL" # Используется для ссылок на Mini App (URL будет в логах webhook-init)
 
-# Настройки для Docker-сервиса webhook-init (автоматическая настройка вебхука)
-TARGET_SERVICE_HOST="nginx" # Имя сервиса в docker-compose.yml, на который будет указывать localtunnel
-TARGET_SERVICE_PORT="80"    # Внутренний порт этого сервиса (nginx слушает на 80)
+В корне проекта должен находиться файл `.env` с вашими персональными настройками. Если этого файла нет, скопируйте предоставленный файл-пример `.env.example` (который находится в корне проекта) в новый файл с именем `.env`:
 
-# Опциональные переменные для тонкой настройки localtunnel в webhook-init (можно не указывать)
-# LT_SUBDOMAIN="yourshop"
-# MAX_LT_RETRIES="3"
-# LT_START_TIMEOUT="20" # секунды
-
-# Настройки для магазина (примеры)
-DB_CONNECTION=mysql
-DB_HOST=mariadb
-DB_PORT=3306
-DB_DATABASE=your_shop_db
-DB_USERNAME=your_db_user
-DB_PASSWORD=your_db_password
-
-# Настройки для подключения к ИИ сервису (если используется внешний)
-AI_SERVICE_ENDPOINT="URL_СЕРВИСА_ИИ"
-AI_SERVICE_API_KEY="КЛЮЧ_API_ДЛЯ_ИИ"
+```bash
+cp .env.example .env
 ```
-**Примечание:** Переменная `TELEGRAM_WEBHOOK_BASE_URL` больше не требуется в `.env` для ручной настройки, так как сервис `webhook-init` будет автоматически получать публичный URL от `localtunnel`. Однако, `MINI_APP_BASE_URL` все еще может быть полезна, если вы хотите формировать прямые ссылки на Mini App, но ее значение также будет динамическим и его нужно будет брать из логов сервиса `webhook-init` (`docker-compose logs webhook-init`).
+
+Затем откройте созданный файл `.env` и **обязательно** заполните как минимум следующие значения:
+*   `TELEGRAM_BOT_TOKEN`: Ваш уникальный токен для Telegram бота (полученный от BotFather).
+*   Данные для подключения к базе данных (например, `MYSQL_DATABASE`, `MYSQL_USER`, `MYSQL_PASSWORD`), если они отличаются от значений по умолчанию в `.env.example` или если вы используете другую БД для магазина.
+
+Ниже приведен список основных переменных, которые содержатся в `.env.example` и используются проектом. Некоторые из них имеют значения по умолчанию, другие (особенно секреты, как `TELEGRAM_BOT_TOKEN`) требуют вашего явного ввода. Полный список с комментариями смотрите в самом файле `.env.example`.
+
+```env
+# === Основные настройки Hleb (из .env.example) ===
+SERVER_EXTERNAL_PORT=5125
+DATABASE_EXTERNAL_PORT=3360
+PMA_EXTERNAL_PORT=8080
+
+# === Настройки Telegram Бота и Автоматического Вебхука ===
+TELEGRAM_BOT_TOKEN="" # <--- ЗАПОЛНИТЕ ОБЯЗАТЕЛЬНО ВАШИМ ТОКЕНОМ!
+TELEGRAM_WEBHOOK_PATH="/telegram_bot_webhook"
+# MINI_APP_BASE_URL="" # Этот URL будет динамическим, см. логи webhook-init
+
+# === Настройки для Docker-сервиса webhook-init ===
+TARGET_SERVICE_HOST="nginx"
+TARGET_SERVICE_PORT="80"
+# LT_SUBDOMAIN="" # Опционально: желаемый поддомен для localtunnel
+# MAX_LT_RETRIES="3" # Опционально
+# LT_START_TIMEOUT="20" # Опционально
+
+# === Настройки Базы Данных Магазина (MariaDB/MySQL из .env.example) ===
+MYSQL_DATABASE="hleb"
+MYSQL_USER="hleb"
+MYSQL_PASSWORD="toaster"
+
+# === Настройки Приложения Магазина (из .env.example, используются в hleb/config/shop.php) ===
+SHOP_CURRENCY="RUB"
+# ... и другие настройки магазина ...
+
+# === Общие Настройки Приложения Hleb (из .env.example) ===
+# APP_DEBUG=true
+# ... и другие настройки Hleb ...
+```
+**Примечание:** Значение для `MINI_APP_BASE_URL` (если оно вам необходимо для явного формирования ссылок где-либо) будет динамически сгенерировано сервисом `webhook-init` при каждом запуске `localtunnel`. Вы сможете найти актуальный публичный URL в логах сервиса `webhook-init` (команда: `docker-compose logs webhook-init`). Система автоматической настройки вебхуков будет использовать этот URL самостоятельно.
 
 ### 1.6. Пример Взаимодействия с Ботом
 
