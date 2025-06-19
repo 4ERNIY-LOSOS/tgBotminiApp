@@ -34,3 +34,29 @@ services:
     ports:
       - '${DATABASE_EXTERNAL_PORT}:3306'
 
+  webhook-init:
+    build:
+      context: ./docker/webhook-init
+    env_file:
+      - .env
+    environment:
+      # TELEGRAM_BOT_TOKEN is expected to be in .env
+      TELEGRAM_WEBHOOK_PATH: "${TELEGRAM_WEBHOOK_PATH:-/telegram_bot_webhook}"
+      TARGET_SERVICE_HOST: "${TARGET_SERVICE_HOST:-nginx}"
+      TARGET_SERVICE_PORT: "${TARGET_SERVICE_PORT:-80}"
+      # Optional for entrypoint script, can be set in .env:
+      # LT_SUBDOMAIN: "${LT_SUBDOMAIN}"
+      # MAX_LT_RETRIES: "${MAX_LT_RETRIES:-3}"
+      # LT_START_TIMEOUT: "${LT_START_TIMEOUT:-20}"
+    depends_on:
+      nginx:
+        condition: service_started # Wait for nginx to be started
+      php:
+        condition: service_started   # Wait for php to be started
+    restart: on-failure
+    # If you use custom networks, ensure this service is on the same network
+    # as 'nginx' and 'php' to allow TARGET_SERVICE_HOST to resolve.
+    # For example, if you have a default network created by docker-compose,
+    # it should work. If you defined a specific network like 'app_net', add:
+    # networks:
+    #   - app_net
