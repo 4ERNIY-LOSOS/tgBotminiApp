@@ -74,6 +74,21 @@ while [ -z "$PUBLIC_URL" ] && [ $LT_ATTEMPT -lt $MAX_RETRIES ]; do
     else
         PUBLIC_URL=$(echo "$PUBLIC_URL" | head -n 1)
         echo "Webhook Initializer: Successfully obtained Localtunnel URL: $PUBLIC_URL"
+
+        # Define the shared file path
+        SHARED_URL_FILE="/run/shared_config/localtunnel_url.txt"
+
+        # Create the directory if it doesn't exist (it should be mounted, but good practice)
+        mkdir -p /run/shared_config
+
+        # Write the public URL to the shared file
+        echo "$PUBLIC_URL" > "$SHARED_URL_FILE"
+        if [ $? -eq 0 ]; then
+            echo "Webhook Initializer: Successfully wrote Public URL to $SHARED_URL_FILE"
+        else
+            echo "Webhook Initializer: Error writing Public URL to $SHARED_URL_FILE"
+            # Decide if this should be a fatal error, for now, it will continue
+        fi
     fi
 done
 

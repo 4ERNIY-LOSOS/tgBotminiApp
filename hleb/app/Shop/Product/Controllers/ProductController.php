@@ -39,21 +39,43 @@ class ProductController extends BaseShopController
             $text = $message->getText();
 
             if ($text === '/start') {
-                // Get Mini App URL from config (hleb/config/telegram.php or hleb/config/shop.php)
-                // Assuming the key is 'mini_app_base_url' in 'telegram.php' config file
-                $miniAppUrl = config('telegram.mini_app_base_url');
+                $dynamicMiniAppBaseUrl = '';
+                $sharedUrlFilePath = '/run/shared_config/localtunnel_url.txt';
+                if (file_exists($sharedUrlFilePath) && is_readable($sharedUrlFilePath)) {
+                    $fileContent = @file_get_contents($sharedUrlFilePath);
+                    if ($fileContent !== false) {
+                        $potentialUrl = trim($fileContent);
+                        // Basic validation for a URL structure
+                        if (filter_var($potentialUrl, FILTER_VALIDATE_URL) && (strpos($potentialUrl, 'http://') === 0 || strpos($potentialUrl, 'https://') === 0)) {
+                            $dynamicMiniAppBaseUrl = $potentialUrl;
+                            Log::info("Successfully read Mini App base URL from shared file: " . $dynamicMiniAppBaseUrl);
+                        } else {
+                            Log::warning("Content of shared URL file ('" . $sharedUrlFilePath . "') is not a valid URL: " . $fileContent);
+                        }
+                    } else {
+                        Log::error("Could not read content from shared URL file: " . $sharedUrlFilePath);
+                    }
+                } else {
+                    Log::info("Shared URL file not found or not readable: " . $sharedUrlFilePath . ". Falling back to .env config.");
+                }
+
+                $miniAppUrl = !empty($dynamicMiniAppBaseUrl) ? $dynamicMiniAppBaseUrl : config('telegram.mini_app_base_url');
 
                 if (empty($miniAppUrl)) {
-                    Log::warning('Mini App URL is not configured. Cannot send WebApp button.');
+                    Log::warning('Mini App URL is not configured (neither in shared file nor .env). Cannot send WebApp button.');
                     $this->telegramService->sendMessage([
                         'chat_id' => $chatId,
                         'text' => 'Бот работает! Добро пожаловать! (Mini App URL не настроен)'
                     ]);
                 } else {
+                    // Ensure no double slashes if $miniAppUrl might have a trailing slash
+                    // and we are appending /shop_mini_app/
+                    $finalMiniAppUrl = rtrim($miniAppUrl, '/') . '/shop_mini_app/';
+
                     $replyMarkup = [
                         'inline_keyboard' => [
                             [
-                                ['text' => '🛍️ Открыть Магазин (Mini App)', 'web_app' => ['url' => $miniAppUrl . '/shop_mini_app/']]
+                                ['text' => '🛍️ Открыть Магазин (Mini App)', 'web_app' => ['url' => $finalMiniAppUrl]]
                                 // Assuming shop_mini_app/ is the public path to the mini app's index.html
                                 // The full URL to mini_app/index.html should be formed correctly.
                                 // If MINI_APP_BASE_URL in .env already includes the full path to index.html,
