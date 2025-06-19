@@ -1,8 +1,5 @@
 version: '3'
 
-volumes:
-  shared_localtunnel_config: {}
-
 services:
   nginx:
     image: nginx
@@ -25,7 +22,6 @@ services:
       - ./hleb:/hleb
       - ./log:/log
       - ./docker/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
-      - shared_localtunnel_config:/run/shared_config
 
   db:
     image: mariadb
@@ -52,8 +48,6 @@ services:
       # LT_SUBDOMAIN: "${LT_SUBDOMAIN}"
       # MAX_LT_RETRIES: "${MAX_LT_RETRIES:-3}"
       # LT_START_TIMEOUT: "${LT_START_TIMEOUT:-20}"
-    volumes:
-      - shared_localtunnel_config:/run/shared_config
     depends_on:
       nginx:
         condition: service_started # Wait for nginx to be started
