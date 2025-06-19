@@ -1,31 +1,31 @@
-# Telegram Mini App Directory (`hleb/public/shop_mini_app/`)
+# Директория Telegram Mini App (`hleb/public/shop_mini_app/`)
 
-This directory contains all the static front-end assets for the Telegram Mini App (TMA) associated with the e-commerce platform. Telegram Mini Apps are web applications that run inside the Telegram interface, offering a rich and interactive user experience.
+Эта директория содержит все статические ресурсы фронтенда для Telegram Mini App (TMA), связанного с платформой электронной коммерции. Telegram Mini Apps — это веб-приложения, которые запускаются внутри интерфейса Telegram, предлагая богатый и интерактивный пользовательский опыт.
 
-## Contents:
+## Содержимое:
 
-*   **`index.html`**: The main entry point for the Mini App. This HTML file structures the application and typically loads the necessary CSS and JavaScript files.
-*   **`css/`**: Contains stylesheets (e.g., `main.css`) to define the visual appearance and layout of the Mini App.
-*   **`js/`**: Holds JavaScript files (e.g., `app.js`) that implement the client-side logic, interactivity, and communication with the backend API. This includes:
-    *   Fetching product data.
-    *   Managing the cart display and interactions.
-    *   Handling user input for checkout.
-    *   Communicating with the Telegram SDK for Mini Apps (e.g., to get user data, theme colors, or use Telegram's native UI elements).
-*   **`images/`**: (If any static images are part of the Mini App's UI itself, not product images which would be loaded dynamically).
+*   **`index.html`**: Основная точка входа для Mini App. Этот HTML-файл структурирует приложение и обычно загружает необходимые CSS и JavaScript файлы.
+*   **`css/`**: Содержит таблицы стилей (например, `main.css`) для определения визуального оформления и макета Mini App.
+*   **`js/`**: Хранит JavaScript-файлы (например, `app.js`), которые реализуют клиентскую логику, интерактивность и взаимодействие с бэкенд API. Это включает:
+    *   Получение данных о товарах.
+    *   Управление отображением и взаимодействиями с корзиной.
+    *   Обработку пользовательского ввода при оформлении заказа.
+    *   Взаимодействие с Telegram SDK для Mini Apps (например, для получения данных пользователя, цветов темы или использования нативных элементов интерфейса Telegram).
+*   **`images/`**: (Если какие-либо статические изображения являются частью самого пользовательского интерфейса Mini App, а не изображения товаров, которые загружаются динамически).
 
-## Functionality:
+## Функциональность:
 
-The files in this directory are served statically by the web server (Nginx). The Mini App is launched within Telegram when a user clicks a special button or link provided by the bot.
+Файлы в этой директории обслуживаются статически веб-сервером (Nginx). Mini App запускается в Telegram, когда пользователь нажимает специальную кнопку или ссылку, предоставленную ботом.
 
-The JavaScript within the Mini App (`app.js`) will make API calls to the Hleb backend (defined in `hleb/routes/map.php` and handled by controllers in `hleb/app/Shop/`) to:
-*   Fetch product listings and details.
-*   Add/remove items from the cart.
-*   Retrieve cart contents.
-*   Initiate the checkout process.
-*   Access user-specific information after authentication/authorization.
+JavaScript в Mini App (`app.js`) будет выполнять API-вызовы к бэкенду Hleb (определенные в `hleb/routes/map.php` и обрабатываемые контроллерами в `hleb/app/Shop/`) для:
+*   Получения списков товаров и их деталей.
+*   Добавления/удаления товаров из корзины.
+*   Получения содержимого корзины.
+*   Инициирования процесса оформления заказа.
+*   Доступа к специфичной для пользователя информации после аутентификации/авторизации.
 
-## Development:
+## Разработка:
 
-Frontend development for the Mini App (HTML, CSS, JavaScript) happens here. Developers might use frameworks like React, Vue, Svelte, or vanilla JavaScript to build the application.
+Разработка фронтенда для Mini App (HTML, CSS, JavaScript) происходит здесь. Разработчики могут использовать фреймворки, такие как React, Vue, Svelte, или нативный JavaScript для создания приложения.
 
-The base URL for this Mini App (e.g., `https://yourdomain.com/shop_mini_app/`) is configured in the backend (likely in `.env` and used by `ProductController.php` when sending the WebApp button via the bot).
+Базовый URL для этого Mini App (например, `https://yourdomain.com/shop_mini_app/`) настраивается в бэкенде (вероятно, в `.env` и используется `ProductController.php` при отправке кнопки WebApp через бота).
