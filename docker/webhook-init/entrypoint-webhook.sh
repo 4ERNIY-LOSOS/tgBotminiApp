@@ -39,7 +39,7 @@ LT_ATTEMPT=0
 PUBLIC_URL=""
 
 while [ -z "\$PUBLIC_URL" ] && [ \$LT_ATTEMPT -lt \$MAX_RETRIES ]; do
-    LT_ATTEMPT=\$((LT_ATTEMPT + 1))
+    LT_ATTEMPT=\$(expr \$LT_ATTEMPT + 1)
     echo "Webhook Initializer: Attempt \$LT_ATTEMPT of \$MAX_RETRIES to start localtunnel for http://\$TARGET_SERVICE_HOST:\$TARGET_SERVICE_PORT..."
 
     # Temporary file to capture localtunnel output
