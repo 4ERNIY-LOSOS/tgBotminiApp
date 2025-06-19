@@ -1,22 +1,22 @@
-# AI Module (`app/Shop/Ai/`)
+# Модуль ИИ (`app/Shop/Ai/`)
 
-This module is designated for integrating Artificial Intelligence (AI) powered features into the e-commerce platform. The goal is to enhance user experience, automate tasks, or provide intelligent insights.
+Этот модуль предназначен для интеграции функций на базе Искусственного Интеллекта (ИИ) в платформу электронной коммерции. Цель состоит в улучшении пользовательского опыта, автоматизации задач или предоставлении интеллектуальных аналитических данных.
 
-## Potential Features:
+## Потенциальные Возможности:
 
-*   **Product Recommendations:** Implementing an AI-driven recommendation engine to suggest relevant products to users based on their browsing history, purchase patterns, or items currently in their cart.
-*   **Personalized Shopping Experience:** Customizing the content and product listings displayed to users based on their individual preferences and behavior.
-*   **AI-Powered Chatbot:** Providing an intelligent chatbot for customer support, capable of answering frequently asked questions, assisting with order tracking, or guiding users through the shopping process.
-*   **Search Enhancement:** Utilizing Natural Language Processing (NLP) to improve the accuracy and relevance of search results.
-*   **Demand Forecasting:** Using AI to predict product demand, helping with inventory management.
-*   **Image Recognition:** For features like visual search or automated product tagging.
+*   **Рекомендации Товаров:** Внедрение системы рекомендаций на базе ИИ для предложения пользователям релевантных товаров на основе их истории просмотров, покупательских паттернов или товаров, находящихся в корзине.
+*   **Персонализированный Опыт Покупок:** Настройка контента и списков товаров, отображаемых пользователям, на основе их индивидуальных предпочтений и поведения.
+*   **Чат-бот на Базе ИИ:** Предоставление интеллектуального чат-бота для поддержки клиентов, способного отвечать на часто задаваемые вопросы, помогать с отслеживанием заказов или направлять пользователей в процессе покупок.
+*   **Улучшение Поиска:** Использование Обработки Естественного Языка (NLP) для повышения точности и релевантности результатов поиска.
+*   **Прогнозирование Спроса:** Использование ИИ для прогнозирования спроса на товары, что помогает в управлении запасами.
+*   **Распознавание Изображений:** Для таких функций, как визуальный поиск или автоматическое тегирование товаров.
 
-## Structure:
+## Структура:
 
-This module may include:
+Этот модуль может включать:
 
-*   **`Controllers/`**: (e.g., `AiChatController.php`) To handle interactions with AI services or expose AI-driven data via an API.
-*   **`Services/`**: (e.g., `AiChatService.php`, `RecommendationService.php`) To encapsulate the business logic for interacting with AI models, processing data, and preparing results. This might involve communication with third-party AI platforms or custom-built models.
-*   **`Models/`**: (If specific data models are needed for AI features, e.g., for storing user profiles for personalization).
+*   **`Controllers/`**: (например, `AiChatController.php`) Для обработки взаимодействий с сервисами ИИ или предоставления данных, управляемых ИИ, через API.
+*   **`Services/`**: (например, `AiChatService.php`, `RecommendationService.php`) Для инкапсуляции бизнес-логики взаимодействия с моделями ИИ, обработки данных и подготовки результатов. Это может включать взаимодействие со сторонними платформами ИИ или специально созданными моделями.
+*   **`Models/`**: (Если для функций ИИ необходимы специфические модели данных, например, для хранения профилей пользователей для персонализации).
 
-Integration with external AI services will typically be configured in `hleb/config/shop.php` or through environment variables, referencing API keys and endpoints.
+Интеграция с внешними сервисами ИИ обычно настраивается в `hleb/config/shop.php` или через переменные окружения, ссылаясь на API-ключи и эндпоинты.

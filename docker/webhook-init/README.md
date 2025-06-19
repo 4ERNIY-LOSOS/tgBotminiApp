@@ -1,35 +1,35 @@
-# Webhook Initialization Service (`docker/webhook-init/`)
+# Сервис Инициализации Веб-хука (`docker/webhook-init/`)
 
-This directory contains the configuration and entrypoint script for the `webhook-init` Docker service. The primary purpose of this service is to automate the setup of the Telegram bot's webhook during the deployment or startup phase of the application.
+Эта директория содержит конфигурацию и скрипт точки входа для Docker-сервиса `webhook-init`. Основное назначение этого сервиса — автоматизировать настройку веб-хука для Telegram-бота на этапе развертывания или запуска приложения.
 
-## Functionality:
+## Функциональность:
 
-When the `webhook-init` service starts (as defined in `docker-compose.yml`), it executes the `entrypoint-webhook.sh` script. This script performs the following actions:
+Когда сервис `webhook-init` запускается (как определено в `docker-compose.yml`), он выполняет скрипт `entrypoint-webhook.sh`. Этот скрипт выполняет следующие действия:
 
-1.  **Reads Environment Variables:** It retrieves necessary configuration from environment variables, which are typically passed from the `.env` file via `docker-compose.yml`. These include:
-    *   `TELEGRAM_BOT_TOKEN`: The authentication token for your Telegram bot.
-    *   `TELEGRAM_WEBHOOK_PATH`: The specific path on your server where Telegram should send webhook updates (e.g., `/telegram_bot_webhook`).
-    *   `TARGET_SERVICE_HOST`: The hostname of the service within the Docker network that localtunnel should target (usually the Nginx or PHP application service, e.g., `nginx`).
-    *   `TARGET_SERVICE_PORT`: The internal port of the target service (e.g., `80`).
-    *   Optional variables for `localtunnel` like `LT_SUBDOMAIN`, `MAX_LT_RETRIES`, `LT_START_TIMEOUT`.
+1.  **Чтение Переменных Окружения:** Он извлекает необходимую конфигурацию из переменных окружения, которые обычно передаются из файла `.env` через `docker-compose.yml`. К ним относятся:
+    *   `TELEGRAM_BOT_TOKEN`: Токен аутентификации для вашего Telegram-бота.
+    *   `TELEGRAM_WEBHOOK_PATH`: Конкретный путь на вашем сервере, куда Telegram должен отправлять обновления веб-хука (например, `/telegram_bot_webhook`).
+    *   `TARGET_SERVICE_HOST`: Имя хоста сервиса в сети Docker, на который должен быть нацелен `localtunnel` (обычно это сервис Nginx или PHP-приложения, например, `nginx`).
+    *   `TARGET_SERVICE_PORT`: Внутренний порт целевого сервиса (например, `80`).
+    *   Опциональные переменные для `localtunnel`, такие как `LT_SUBDOMAIN`, `MAX_LT_RETRIES`, `LT_START_TIMEOUT`.
 
-2.  **Starts Localtunnel:** It launches `localtunnel` to expose the local `TARGET_SERVICE_HOST` (e.g., your Nginx container) to the public internet with a temporary HTTPS URL. This is crucial for local development when your application isn't directly accessible from the internet.
+2.  **Запуск Localtunnel:** Он запускает `localtunnel` для предоставления публичного доступа к локальному `TARGET_SERVICE_HOST` (например, вашему контейнеру Nginx) через временный URL-адрес HTTPS. Это критически важно для локальной разработки, когда ваше приложение недоступно напрямую из Интернета.
 
-3.  **Retrieves Public URL:** The script waits for `localtunnel` to provide a public URL (e.g., `https://yoursubdomain.loca.lt`).
+3.  **Получение Публичного URL:** Скрипт ожидает, пока `localtunnel` предоставит публичный URL (например, `https://yoursubdomain.loca.lt`).
 
-4.  **Sets Telegram Webhook:** Once the public URL is obtained, the script constructs the full webhook URL by appending the `TELEGRAM_WEBHOOK_PATH` to the `localtunnel` URL. It then makes an API call to the Telegram Bot API (`setWebhook` method) to register this full URL as the endpoint for your bot.
+4.  **Установка Веб-хука Telegram:** После получения публичного URL скрипт формирует полный URL веб-хука, добавляя `TELEGRAM_WEBHOOK_PATH` к URL-адресу `localtunnel`. Затем он выполняет API-вызов к Telegram Bot API (метод `setWebhook`) для регистрации этого полного URL в качестве эндпоинта для вашего бота.
 
-5.  **Maintains Tunnel:** After successfully setting the webhook, the service keeps `localtunnel` running to maintain the public URL and ensure Telegram can continue to send updates. If `localtunnel` stops, the service (and container) will likely exit.
+5.  **Поддержание Туннеля:** После успешной установки веб-хука сервис продолжает работу `localtunnel` для поддержания публичного URL и обеспечения возможности Telegram отправлять обновления. Если `localtunnel` остановится, сервис (и контейнер), скорее всего, завершит работу.
 
-## Docker Configuration:
+## Конфигурация Docker:
 
-*   **`Dockerfile`**: Defines the Docker image for this service. It typically installs Node.js (for `localtunnel`), `curl` (for making the API call to Telegram), and copies the `entrypoint-webhook.sh` script.
-*   **`entrypoint-webhook.sh`**: The shell script that orchestrates the steps described above.
+*   **`Dockerfile`**: Определяет Docker-образ для этого сервиса. Обычно он устанавливает Node.js (для `localtunnel`), `curl` (для выполнения API-вызова к Telegram) и копирует скрипт `entrypoint-webhook.sh`.
+*   **`entrypoint-webhook.sh`**: Shell-скрипт, который организует выполнение описанных выше шагов.
 
-## Importance:
+## Важность:
 
-This service automates a critical setup step for local development and potentially for some deployment scenarios:
-*   **Local Development:** Allows developers to receive Telegram webhook updates on their local machine without manual `localtunnel` setup and webhook registration.
-*   **Dynamic IPs/Ports:** If the public-facing URL changes frequently, this service can help automate the webhook update process.
+Этот сервис автоматизирует критически важный шаг настройки для локальной разработки и, возможно, для некоторых сценариев развертывания:
+*   **Локальная Разработка:** Позволяет разработчикам получать обновления веб-хуков Telegram на своей локальной машине без ручной настройки `localtunnel` и регистрации веб-хука.
+*   **Динамические IP/Порты:** Если публичный URL часто меняется, этот сервис может помочь автоматизировать процесс обновления веб-хука.
 
-**Note:** For production environments, a stable public URL is generally preferred, and webhook setup might be a one-time manual process or handled by deployment scripts rather than `localtunnel`. However, `localtunnel` is very convenient for development and testing.
+**Примечание:** Для производственных сред обычно предпочтителен стабильный публичный URL, и настройка веб-хука может быть однократным ручным процессом или выполняться скриптами развертывания, а не через `localtunnel`. Однако `localtunnel` очень удобен для разработки и тестирования.

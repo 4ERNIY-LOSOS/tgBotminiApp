@@ -1,23 +1,23 @@
-# Cart Module (`app/Shop/Cart/`)
+# Модуль Корзины (`app/Shop/Cart/`)
 
-This module is responsible for all functionalities related to the user's shopping cart. It allows users to collect items they intend to purchase before proceeding to checkout. This module is crucial for the Telegram Mini App, providing the backend logic for its cart interface.
+Этот модуль отвечает за всю функциональность, связанную с корзиной покупок пользователя. Он позволяет пользователям собирать товары, которые они намереваются приобрести, перед тем как перейти к оформлению заказа. Этот модуль критически важен для Telegram Mini App, предоставляя бэкэнд-логику для его интерфейса корзины.
 
-## Key Responsibilities:
+## Ключевые Обязанности:
 
-*   **Adding Items:** Allowing users to add products to their cart, specifying quantity and potentially product variations.
-*   **Viewing Cart:** Displaying the current contents of the cart, including items, quantities, individual prices, and the total price.
-*   **Updating Quantities:** Enabling users to change the quantity of items in their cart.
-*   **Removing Items:** Allowing users to remove items from their cart.
-*   **Cart Persistence:** Managing the cart's state, which could be session-based for guest users or stored in the database for registered users.
-*   **Calculating Totals:** Computing the subtotal, taxes (if applicable), shipping costs (if integrated here), and the final grand total for the items in the cart.
-*   **Coupon/Discount Application:** (If applicable) Applying discount codes or promotions to the cart total.
+*   **Добавление Товаров:** Позволяет пользователям добавлять товары в корзину, указывая количество и, возможно, варианты товара.
+*   **Просмотр Корзины:** Отображение текущего содержимого корзины, включая товары, количество, индивидуальные цены и общую стоимость.
+*   **Обновление Количества:** Позволяет пользователям изменять количество товаров в своей корзине.
+*   **Удаление Товаров:** Позволяет пользователям удалять товары из своей корзины.
+*   **Сохранение Состояния Корзины:** Управление состоянием корзины, которое может быть основано на сессии для гостевых пользователей или храниться в базе данных для зарегистрированных пользователей.
+*   **Расчет Итоговой Суммы:** Вычисление промежуточной суммы, налогов (если применимо), стоимости доставки (если интегрировано здесь) и окончательной общей суммы для товаров в корзине.
+*   **Применение Купонов/Скидок:** (Если применимо) Применение кодов скидок или акций к общей сумме корзины.
 
-## Structure:
+## Структура:
 
-This module typically includes:
+Этот модуль обычно включает:
 
-*   **`Controllers/`**: (`CartController.php`) Handles HTTP requests, primarily API calls from the Telegram Mini App, for cart operations (e.g., `addToCartMiniApp`, `viewCart`, `updateItem`, `removeItem`). It might also handle Telegram commands like `/cart`.
-*   **`Services/`**: (`CartService.php`) Contains the core business logic for cart management. This service interacts with product data (to get prices, check stock), manages cart storage (session or database), and performs calculations.
-*   **`Models/`**: (If the cart is stored in the database or needs complex data structures) Models to represent the cart and its items. For session-based carts, models might not be strictly necessary here.
+*   **`Controllers/`**: (`CartController.php`) Обрабатывает HTTP-запросы, в основном API-вызовы из Telegram Mini App, для операций с корзиной (например, `addToCartMiniApp`, `viewCart`, `updateItem`, `removeItem`). Он также может обрабатывать команды Telegram, такие как `/cart`.
+*   **`Services/`**: (`CartService.php`) Содержит основную бизнес-логику для управления корзиной. Этот сервис взаимодействует с данными о товарах (для получения цен, проверки наличия), управляет хранилищем корзины (сессия или база данных) и выполняет расчеты.
+*   **`Models/`**: (Если корзина хранится в базе данных или требует сложных структур данных) Модели для представления корзины и ее позиций. Для корзин на основе сессий модели здесь могут быть не строго обязательны.
 
-The `CartController` will expose API endpoints that the JavaScript frontend of the Telegram Mini App consumes to provide a dynamic and interactive cart experience.
+`CartController` будет предоставлять API-эндпоинты, которые использует JavaScript-фронтенд Telegram Mini App для обеспечения динамичного и интерактивного опыта работы с корзиной.

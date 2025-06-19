@@ -1,29 +1,29 @@
-# Product Module (`app/Shop/Product/`)
+# Модуль Товаров (`app/Shop/Product/`)
 
-The Product module is central to the e-commerce platform, responsible for managing all aspects of the product catalog, including product details, categorization, inventory, and how products are displayed and discovered by users. It also handles initial Telegram bot interactions.
+Модуль Товаров является центральным элементом платформы электронной коммерции, отвечающим за управление всеми аспектами каталога товаров, включая детали товаров, категоризацию, запасы, а также то, как товары отображаются и находятся пользователями. Он также обрабатывает первоначальные взаимодействия с ботом Telegram.
 
-## Key Responsibilities:
+## Ключевые Обязанности:
 
-*   **Product Catalog Management:** Storing and retrieving detailed information about each product, such as name, description, price, SKU, images, and custom attributes.
-*   **Category Management:** Organizing products into a hierarchical structure of categories to facilitate browsing and navigation for users.
-*   **Inventory Management:** Tracking stock levels for products (though this might sometimes be a separate, dedicated inventory module/service in larger systems).
-*   **Product Display:** Providing data for displaying product listings (e.g., in a catalog view) and individual product detail pages, primarily for the Telegram Mini App.
-*   **Search and Filtering:**
-    *   `ProductSearchService.php`: Implementing search functionality to allow users to find products based on keywords.
-    *   `ProductFilterService.php`: Enabling users to filter products based on various criteria like price range, category, brand, or other attributes.
-*   **Telegram Bot Interaction:**
-    *   The `ProductController.php` within this module is also responsible for handling initial Telegram bot commands (like `/start`) and processing incoming webhook updates from Telegram. This involves interacting with the `TelegramService` to send messages and display UI elements like the "Open Mini App" button.
+*   **Управление Каталогом Товаров:** Хранение и извлечение подробной информации о каждом товаре, такой как название, описание, цена, артикул (SKU), изображения и пользовательские атрибуты.
+*   **Управление Категориями:** Организация товаров в иерархическую структуру категорий для облегчения просмотра и навигации пользователями.
+*   **Управление Запасами:** Отслеживание уровня запасов товаров (хотя это иногда может быть отдельным, выделенным модулем/сервисом управления запасами в более крупных системах).
+*   **Отображение Товаров:** Предоставление данных для отображения списков товаров (например, в виде каталога) и отдельных страниц с подробной информацией о товаре, в основном для Telegram Mini App.
+*   **Поиск и Фильтрация:**
+    *   `ProductSearchService.php`: Реализация функциональности поиска, позволяющей пользователям находить товары по ключевым словам.
+    *   `ProductFilterService.php`: Предоставление пользователям возможности фильтровать товары по различным критериям, таким как ценовой диапазон, категория, бренд или другие атрибуты.
+*   **Взаимодействие с Ботом Telegram:**
+    *   `ProductController.php` в этом модуле также отвечает за обработку первоначальных команд бота Telegram (например, `/start`) и обработку входящих обновлений веб-хуков от Telegram. Это включает взаимодействие с `TelegramService` для отправки сообщений и отображения элементов пользовательского интерфейса, таких как кнопка "Открыть Mini App".
 
-## Structure:
+## Структура:
 
-This module typically includes:
+Этот модуль обычно включает:
 
-*   **`Controllers/`**: (`ProductController.php`) Handles HTTP requests for viewing product listings, product details, search results, and filter applications. It also contains the `handleWebhook` method for Telegram bot updates.
-*   **`Models/`**: (`Product.php`, potentially `Category.php` if not managed elsewhere) Represent product and category data in the database.
+*   **`Controllers/`**: (`ProductController.php`) Обрабатывает HTTP-запросы для просмотра списков товаров, деталей товаров, результатов поиска и применения фильтров. Он также содержит метод `handleWebhook` для обновлений от бота Telegram.
+*   **`Models/`**: (`Product.php`, возможно `Category.php`, если управление категориями не вынесено в другое место) Представляют данные о товарах и категориях в базе данных.
 *   **`Services/`**:
-    *   `ProductService.php`: Contains the core business logic for managing products, retrieving product data, and interacting with product models.
-    *   `ProductSearchService.php`: Encapsulates the logic for searching products.
-    *   `ProductFilterService.php`: Encapsulates the logic for filtering products.
-*   **`Views/`**: (If any server-side rendering of product pages is done, e.g., for SEO or non-Mini App contexts, these would be in `hleb/resources/views/products/` or similar).
+    *   `ProductService.php`: Содержит основную бизнес-логику для управления товарами, извлечения данных о товарах и взаимодействия с моделями товаров.
+    *   `ProductSearchService.php`: Инкапсулирует логику поиска товаров.
+    *   `ProductFilterService.php`: Инкапсулирует логику фильтрации товаров.
+*   **`Views/`**: (Если выполняется какой-либо серверный рендеринг страниц товаров, например, для SEO или в контекстах, не связанных с Mini App, они будут находиться в `hleb/resources/views/products/` или аналогичном месте).
 
-This module forms the backbone of what users see and interact with when browsing the shop's offerings, both via the Mini App and potentially through direct bot interactions.
+Этот модуль формирует основу того, что пользователи видят и с чем взаимодействуют при просмотре предложений магазина, как через Mini App, так и потенциально через прямые взаимодействия с ботом.

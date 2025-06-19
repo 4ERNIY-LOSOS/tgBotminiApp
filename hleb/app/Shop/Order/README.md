@@ -1,27 +1,27 @@
-# Order Module (`app/Shop/Order/`)
+# Модуль Заказов (`app/Shop/Order/`)
 
-This module is responsible for managing all aspects of customer orders within the e-commerce platform. It handles the process from the point a user decides to checkout with items from their cart, through payment (if applicable), to order confirmation and subsequent tracking.
+Этот модуль отвечает за управление всеми аспектами заказов клиентов на платформе электронной коммерции. Он обрабатывает процесс с момента, когда пользователь решает оформить заказ с товарами из своей корзины, через оплату (если применимо), до подтверждения заказа и последующего отслеживания.
 
-## Key Responsibilities:
+## Ключевые Обязанности:
 
-*   **Checkout Process:** Guiding the user through the steps of providing shipping information, delivery preferences, and payment details.
-*   **Order Creation:** Taking the contents of the cart and user details to create a formal order record in the system.
-*   **Payment Integration:** Interacting with payment gateways to process payments for orders. (Actual gateway logic might be in a separate service or a common payment module).
-*   **Order Persistence:** Storing order details (items, quantities, prices, customer information, shipping address, order status) in the database.
-*   **Order Status Management:** Tracking the status of an order as it moves through different stages (e.g., pending payment, processing, shipped, delivered, completed, cancelled, refunded).
-*   **Order History:** Allowing users to view their past orders and their current statuses.
-*   **Notifications:** Sending order confirmation emails/messages to customers and notifications to administrators about new orders.
-*   **Inventory Adjustment:** Decreasing stock levels for purchased items (often in coordination with the Product module/service).
+*   **Процесс Оформления Заказа:** Проведение пользователя через шаги предоставления информации о доставке, предпочтениях по доставке и платежных данных.
+*   **Создание Заказа:** Принятие содержимого корзины и данных пользователя для создания официальной записи о заказе в системе.
+*   **Интеграция с Платежными Системами:** Взаимодействие с платежными шлюзами для обработки платежей по заказам. (Фактическая логика шлюза может находиться в отдельном сервисе или общем модуле платежей).
+*   **Сохранение Заказов:** Хранение деталей заказа (товары, количество, цены, информация о клиенте, адрес доставки, статус заказа) в базе данных.
+*   **Управление Статусами Заказов:** Отслеживание статуса заказа по мере его продвижения по различным этапам (например, ожидание оплаты, обработка, отправлен, доставлен, выполнен, отменен, возвращен).
+*   **История Заказов:** Предоставление пользователям возможности просматривать свои прошлые заказы и их текущие статусы.
+*   **Уведомления:** Отправка электронных писем/сообщений с подтверждением заказа клиентам и уведомлений администраторам о новых заказах.
+*   **Корректировка Запасов:** Уменьшение уровня запасов для приобретенных товаров (часто в координации с модулем/сервисом Товаров).
 
-## Structure:
+## Структура:
 
-This module typically includes:
+Этот модуль обычно включает:
 
-*   **`Controllers/`**: (`OrderController.php`) Handles HTTP requests related to orders, such as initiating checkout, placing an order (often via API from the Mini App), and viewing order history.
+*   **`Controllers/`**: (`OrderController.php`) Обрабатывает HTTP-запросы, связанные с заказами, такие как инициирование оформления заказа, размещение заказа (часто через API из Mini App) и просмотр истории заказов.
 *   **`Models/`**:
-    *   `Order.php`: Represents an order in the database, storing header-level information.
-    *   `OrderItem.php`: Represents individual items within an order, linked to the `Order` model.
-*   **`Services/`**: (`OrderService.php`) Contains the core business logic for order processing. This includes creating orders, interacting with payment services, updating order statuses, managing inventory adjustments post-order, and handling notifications.
-*   **`Events/`**: (If applicable) Events related to orders, such as `OrderPlacedEvent`, which other parts of the system can listen to (e.g., to send emails or update analytics).
+    *   `Order.php`: Представляет заказ в базе данных, храня информацию на уровне заголовка.
+    *   `OrderItem.php`: Представляет отдельные позиции в заказе, связанные с моделью `Order`.
+*   **`Services/`**: (`OrderService.php`) Содержит основную бизнес-логику для обработки заказов. Это включает создание заказов, взаимодействие с платежными сервисами, обновление статусов заказов, управление корректировкой запасов после заказа и обработку уведомлений.
+*   **`Events/`**: (Если применимо) События, связанные с заказами, такие как `OrderPlacedEvent`, на которые могут подписываться другие части системы (например, для отправки электронных писем или обновления аналитики).
 
-The Order module is critical for the transactional aspect of the e-commerce platform and ensures that customer purchases are accurately recorded and processed.
+Модуль Заказов является критически важным для транзакционной составляющей платформы электронной коммерции и обеспечивает точную запись и обработку покупок клиентов.

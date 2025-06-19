@@ -1,24 +1,24 @@
-# User Module (`app/Shop/User/`)
+# Модуль Пользователя (`app/Shop/User/`)
 
-The User module is responsible for managing user-specific information and functionalities within the e-commerce platform. This includes aspects like user authentication (if applicable beyond Telegram's user ID), user profiles, and personalized features.
+Модуль Пользователя отвечает за управление специфичной для пользователя информацией и функциональностью на платформе электронной коммерции. Это включает такие аспекты, как аутентификация пользователя (если применимо помимо идентификатора пользователя Telegram), профили пользователей и персонализированные функции.
 
-## Key Responsibilities:
+## Ключевые Обязанности:
 
-*   **User Authentication & Identification:** While Telegram provides a user ID, this module might handle additional authentication layers if a separate shop account system is implemented. It would manage user sessions and secure access to user-specific data.
-*   **User Profiles:** Storing and managing user profile information, which could include names, contact details (if provided), shipping addresses, and preferences.
-*   **Order History:** Allowing registered users to view their past orders (often by linking to the Order module).
-*   **Favorites/Wishlist:**
-    *   `FavoriteController.php`, `FavoriteService.php`, `Favorite.php`: Enabling users to save products to a "favorites" or "wishlist" for later viewing or purchase.
-*   **Personalized Settings:** Managing user-specific settings or preferences related to their shopping experience.
-*   **Account Management:** Providing an interface for users to update their profile information, change passwords (if applicable), and manage their account settings.
+*   **Аутентификация и Идентификация Пользователя:** Хотя Telegram предоставляет идентификатор пользователя, этот модуль может обрабатывать дополнительные уровни аутентификации, если реализована отдельная система учетных записей магазина. Он будет управлять сессиями пользователей и безопасным доступом к данным, специфичным для пользователя.
+*   **Профили Пользователей:** Хранение и управление информацией профиля пользователя, которая может включать имена, контактные данные (если предоставлены), адреса доставки и предпочтения.
+*   **История Заказов:** Предоставление зарегистрированным пользователям возможности просматривать свои прошлые заказы (часто путем связывания с модулем Заказов).
+*   **Избранное/Список Желаний:**
+    *   `FavoriteController.php`, `FavoriteService.php`, `Favorite.php`: Предоставление пользователям возможности сохранять товары в "избранное" или "список желаний" для последующего просмотра или покупки.
+*   **Персонализированные Настройки:** Управление специфичными для пользователя настройками или предпочтениями, связанными с их опытом покупок.
+*   **Управление Учетной Записью:** Предоставление интерфейса для пользователей для обновления информации своего профиля, изменения паролей (если применимо) и управления настройками своей учетной записи.
 
-## Structure:
+## Структура:
 
-This module typically includes:
+Этот модуль обычно включает:
 
-*   **`Controllers/`**: (`FavoriteController.php`, potentially `UserController.php` or `ProfileController.php`) Handles HTTP requests related to user account management, viewing profiles, managing favorites, etc. These would primarily be API endpoints for the Telegram Mini App.
-*   **`Models/`**: (`Favorite.php`, potentially `User.php` if a custom user model is needed beyond basic Telegram user data) Represent user data, favorite items, and related information in the database.
-*   **`Services/`**: (`FavoriteService.php`, potentially `UserService.php`) Contains the business logic for user registration, login, profile updates, managing favorites, and other user-centric operations.
-*   **`Middleware/`**: (If specific to user authentication for the shop, e.g., `UserAuthMiddleware`) Middleware to protect routes that require an authenticated shop user.
+*   **`Controllers/`**: (`FavoriteController.php`, потенциально `UserController.php` или `ProfileController.php`) Обрабатывают HTTP-запросы, связанные с управлением учетными записями пользователей, просмотром профилей, управлением избранным и т.д. В основном это будут API-эндпоинты для Telegram Mini App.
+*   **`Models/`**: (`Favorite.php`, потенциально `User.php`, если требуется пользовательская модель пользователя помимо основных данных пользователя Telegram) Представляют данные пользователя, избранные товары и связанную информацию в базе данных.
+*   **`Services/`**: (`FavoriteService.php`, потенциально `UserService.php`) Содержат бизнес-логику для регистрации пользователей, входа в систему, обновления профилей, управления избранным и других операций, ориентированных на пользователя.
+*   **`Middleware/`**: (Если специфично для аутентификации пользователя в магазине, например, `UserAuthMiddleware`) Посредники для защиты маршрутов, требующих аутентифицированного пользователя магазина.
 
-This module helps in personalizing the shopping experience and providing users with tools to manage their interactions and history with the store.
+Этот модуль помогает персонализировать опыт покупок и предоставляет пользователям инструменты для управления их взаимодействиями и историей в магазине.

@@ -1,23 +1,23 @@
-# Admin Module (`app/Shop/Admin/`)
+# Модуль Администрирования (`app/Shop/Admin/`)
 
-This module is responsible for the administrative back-office of the e-commerce platform. It provides the necessary interface and functionality for store administrators to manage various aspects of the shop.
+Этот модуль отвечает за административный интерфейс (бек-офис) платформы электронной коммерции. Он предоставляет необходимый интерфейс и функциональность для администраторов магазина для управления различными аспектами магазина.
 
-## Key Responsibilities:
+## Ключевые Обязанности:
 
-*   **Product Management:** Creating, reading, updating, and deleting products (CRUD operations). This includes managing product details, pricing, images, and inventory.
-*   **Category Management:** Organizing products into categories, allowing for easier navigation and discovery by users.
-*   **Order Management:** Viewing and processing customer orders, updating order statuses (e.g., pending, processing, shipped, delivered, cancelled), and managing returns or refunds if applicable.
-*   **User Management:** Viewing customer accounts, managing user roles (if any), and potentially handling customer support inquiries.
-*   **Dashboard & Reporting:** Displaying key metrics and sales reports to provide insights into the store's performance.
-*   **Store Configuration:** Managing general store settings, payment gateway configurations, shipping options, and other administrative parameters.
+*   **Управление Товарами:** Создание, чтение, обновление и удаление товаров (CRUD операции). Это включает управление деталями товаров, ценами, изображениями и запасами.
+*   **Управление Категориями:** Организация товаров по категориям, что позволяет пользователям легче находить и просматривать товары.
+*   **Управление Заказами:** Просмотр и обработка заказов клиентов, обновление статусов заказов (например, в ожидании, в обработке, отправлен, доставлен, отменен) и управление возвратами или возмещениями, если это применимо.
+*   **Управление Пользователями:** Просмотр учетных записей клиентов, управление ролями пользователей (если есть) и потенциально обработка запросов поддержки клиентов.
+*   **Панель Управления и Отчетность:** Отображение ключевых метрик и отчетов о продажах для предоставления информации об эффективности магазина.
+*   **Конфигурация Магазина:** Управление общими настройками магазина, конфигурациями платежных шлюзов, опциями доставки и другими административными параметрами.
 
-## Structure:
+## Структура:
 
-Typically, this module will contain:
+Обычно этот модуль содержит:
 
-*   **`Controllers/`**: Handle HTTP requests related to admin functions (e.g., `AdminProductController.php`, `AdminOrderController.php`).
-*   **`Models/`**: (If specific admin-related data models are needed, otherwise uses models from other modules like Product, Order).
-*   **`Services/`**: Contain business logic specific to administrative tasks.
-*   **`Views/`**: (If using server-side rendering for the admin panel, located in `hleb/resources/views/admin/` or a similar path) HTML templates for the admin interface.
+*   **`Controllers/`**: Обрабатывают HTTP-запросы, связанные с административными функциями (например, `AdminProductController.php`, `AdminOrderController.php`).
+*   **`Models/`**: (Если необходимы специфичные модели данных для администрирования, в противном случае используются модели из других модулей, таких как Product, Order).
+*   **`Services/`**: Содержат бизнес-логику, специфичную для административных задач.
+*   **`Views/`**: (Если используется рендеринг на стороне сервера для административной панели, расположены в `hleb/resources/views/admin/` или аналогичном пути) HTML-шаблоны для интерфейса администратора.
 
-Access to this module should be restricted to authenticated administrators only, likely through an `AdminAuthMiddleware`.
+Доступ к этому модулю должен быть ограничен только аутентифицированными администраторами, вероятно, через `AdminAuthMiddleware`.

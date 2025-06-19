@@ -1,15 +1,15 @@
-# Shop Module
+# Модуль Магазина (`app/Shop/`)
 
-This directory (`app/Shop/`) is the core of the e-commerce functionality within the Hleb application. It encapsulates all the features and logic related to the online store, including product management, shopping cart, order processing, user accounts, and administrative functions.
+Эта директория (`app/Shop/`) является ядром функциональности электронной коммерции в приложении Hleb. Она инкапсулирует все возможности и логику, связанные с интернет-магазином, включая управление товарами, корзину покупок, обработку заказов, учетные записи пользователей и административные функции.
 
-The Shop module is further broken down into submodules, each responsible for a specific domain:
+Модуль Магазина далее разделен на подмодули, каждый из которых отвечает за определенную область:
 
-*   **`Admin/`**: Contains the logic for the administration panel, allowing store owners to manage products, categories, orders, users, and other store settings.
-*   **`Ai/`**: Houses features related to Artificial Intelligence, such as product recommendation engines, personalized user experiences, or AI-powered chatbots for customer support.
-*   **`Cart/`**: Manages the shopping cart functionality, including adding items, updating quantities, removing items, and calculating totals. This module primarily serves the Telegram Mini App.
-*   **`Common/`**: Includes shared classes, helper functions, base controllers, or services that are used across multiple submodules within the Shop.
-*   **`Order/`**: Handles all aspects of order processing, from checkout initiation to payment integration (if applicable), order creation, status updates, and order history.
-*   **`Product/`**: Responsible for managing the product catalog, including product details, categories, inventory levels, search, and filtering capabilities. This module also handles initial Telegram bot interactions like `/start` and webhook processing.
-*   **`User/`**: Manages user-related functionalities such as authentication, user profiles, viewing order history, and managing saved preferences like favorites.
+*   **`Admin/`**: Содержит логику для административной панели, позволяя владельцам магазинов управлять товарами, категориями, заказами, пользователями и другими настройками магазина.
+*   **`Ai/`**: Вмещает функции, связанные с Искусственным Интеллектом, такие как системы рекомендаций товаров, персонализированный пользовательский опыт или чат-боты на базе ИИ для поддержки клиентов.
+*   **`Cart/`**: Управляет функциональностью корзины покупок, включая добавление товаров, обновление количества, удаление товаров и расчет итоговой суммы. Этот модуль в основном обслуживает Telegram Mini App.
+*   **`Common/`**: Включает общие классы, вспомогательные функции, базовые контроллеры или сервисы, которые используются несколькими подмодулями внутри Магазина.
+*   **`Order/`**: Обрабатывает все аспекты обработки заказов, от момента оформления заказа до интеграции с платежными системами (если применимо), создания заказа, обновления статусов и истории заказов.
+*   **`Product/`**: Отвечает за управление каталогом товаров, включая информацию о товарах, категории, уровни запасов, а также возможности поиска и фильтрации. Этот модуль также обрабатывает первоначальные взаимодействия с ботом Telegram, такие как команда `/start` и обработка веб-хуков.
+*   **`User/`**: Управляет функциональностью, связанной с пользователями, такой как аутентификация, профили пользователей, просмотр истории заказов и управление сохраненными предпочтениями, например, избранными товарами.
 
-Each submodule typically contains its own Controllers, Models, and Services to maintain a clear separation of concerns and promote modularity.
+Каждый подмодуль обычно содержит собственные Контроллеры, Модели и Сервисы для поддержания четкого разделения ответственности и обеспечения модульности.
