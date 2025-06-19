@@ -1,6 +1,14 @@
 #!/bin/bash
-# Script to be run as the entrypoint for the webhook-init Docker service.
 
+echo "--- DEBUGGING ENVIRONMENT VARIABLES ---"
+echo "TELEGRAM_BOT_TOKEN (raw): [$TELEGRAM_BOT_TOKEN]"
+echo "TELEGRAM_WEBHOOK_PATH (raw): [$TELEGRAM_WEBHOOK_PATH]"
+echo "TARGET_SERVICE_HOST (raw): [$TARGET_SERVICE_HOST]"
+echo "TARGET_SERVICE_PORT (raw): [$TARGET_SERVICE_PORT]"
+echo "--- END DEBUGGING ---"
+echo "" # Add a blank line for readability before original output
+
+# Script to be run as the entrypoint for the webhook-init Docker service.
 echo "Webhook Initializer: Starting up..."
 
 # --- Configuration from Environment Variables ---
