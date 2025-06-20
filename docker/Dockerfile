@@ -20,4 +20,5 @@ RUN  apt update \
   && docker-php-ext-enable xdebug \
   && docker-php-ext-install pdo_mysql \
   && docker-php-ext-install gd \
+  && mkdir -p /log && chmod -R 777 /log \
   && php /src/change-entrypoint.php
