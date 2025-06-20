@@ -37,6 +37,16 @@ class TelegramService
         return $this->telegram !== null;
     }
 
+    /**
+     * Returns the underlying Telegram Bot SDK Api instance.
+     *
+     * @return \Telegram\Bot\Api|null The Api instance if initialized, null otherwise.
+     */
+    public function getSdk(): ?Api
+    {
+        return $this->telegram;
+    }
+
     public function getWebhookUpdate()
     {
         if (!$this->isInitialized()) {
