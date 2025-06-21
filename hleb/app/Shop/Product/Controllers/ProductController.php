@@ -3,8 +3,10 @@ namespace App\Shop\Product\Controllers;
 
 use App\Shop\Common\BaseShopController;
 use App\Shop\Common\Services\TelegramService; // Use the new service
+use App\Shop\Common\Services\TelegramUpdateHandlerService;
 use Hleb\Static\Log; // Hleb's logging facade
-use Hleb\Static\Settings; // To access config
+// Settings class might not be needed anymore if config() is used directly and no other settings are read.
+// use Hleb\Static\Settings;
 
 class ProductController extends BaseShopController
 {
@@ -12,70 +14,58 @@ class ProductController extends BaseShopController
 
     public function __construct()
     {
+        // It's good practice to ensure TelegramService is available.
+        // Consider dependency injection if the framework supports it easily,
+        // otherwise, direct instantiation is fine for Hleb modules.
         $this->telegramService = new TelegramService();
     }
 
     // Product related actions (catalog, view, search)
-    public function index() { return "Product Catalog"; }
-    public function show(string $id) { return "Product Detail: " . $id; }
-    public function search() { return "Search Results"; }
-    public function listForMiniApp() { return json_encode(['products' => []]); }
+    // These are placeholders and would be implemented as needed.
+    public function index() { return "Product Catalog View (Placeholder)"; }
+    public function show(string $id) { return "Product Detail View for ID: " . $id . " (Placeholder)"; }
+    public function search() { return "Search Results View (Placeholder)"; }
+
+    // Example API endpoint for Mini App
+    public function listForMiniApp() {
+        // In a real app, this would fetch products from a ProductService
+        $products = [
+            ['id' => 1, 'name' => 'Товар 1', 'price' => 1000],
+            ['id' => 2, 'name' => 'Товар 2', 'price' => 1500],
+        ];
+        return json_encode(['products' => $products]);
+    }
 
     /**
      * Handles incoming webhook updates from Telegram.
+     * This method will primarily delegate processing to TelegramUpdateHandlerService.
      */
     public function handleWebhook()
     {
         if (!$this->telegramService->isInitialized()) {
-            Log::error('Telegram Bot: Service not initialized in Controller.');
-            return response('Bot not configured (service init failed).', 500);
+            Log::error('Telegram Bot: TelegramService not initialized in ProductController.');
+            return response('Bot (TelegramService) not configured.', 500);
         }
 
         $update = $this->telegramService->getWebhookUpdate();
 
-        if ($update && $update->getMessage()) {
-            $message = $update->getMessage();
-            $chatId = $message->getChat()->getId();
-            $text = $message->getText();
-
-            if ($text === '/start') {
-                // Get Mini App URL from config (hleb/config/telegram.php or hleb/config/shop.php)
-                // Assuming the key is 'mini_app_base_url' in 'telegram.php' config file
-                $miniAppUrl = config('telegram.mini_app_base_url');
-
-                if (empty($miniAppUrl)) {
-                    Log::warning('Mini App URL is not configured. Cannot send WebApp button.');
-                    $this->telegramService->sendMessage([
-                        'chat_id' => $chatId,
-                        'text' => 'Бот работает! Добро пожаловать! (Mini App URL не настроен)'
-                    ]);
-                } else {
-                    $replyMarkup = [
-                        'inline_keyboard' => [
-                            [
-                                ['text' => '🛍️ Открыть Магазин (Mini App)', 'web_app' => ['url' => $miniAppUrl . '/shop_mini_app/']]
-                                // Assuming shop_mini_app/ is the public path to the mini app's index.html
-                                // The full URL to mini_app/index.html should be formed correctly.
-                                // If MINI_APP_BASE_URL in .env already includes the full path to index.html,
-                                // then just use $miniAppUrl directly.
-                                // For now, assuming MINI_APP_BASE_URL is the base (e.g. https://xyz.loca.lt)
-                                // and the Mini App is at /shop_mini_app/ relative to that.
-                            ]
-                        ]
-                    ];
-
-                    $this->telegramService->sendMessage([
-                        'chat_id' => $chatId,
-                        'text' => 'Бот работает! Добро пожаловать!',
-                        'reply_markup' => json_encode($replyMarkup)
-                    ]);
-                }
+        if ($update) {
+            // Assumes 'use App\Shop\Common\Services\TelegramUpdateHandlerService;' is present.
+            $updateHandler = new TelegramUpdateHandlerService($this->telegramService);
+            try {
+                // We assume $update is the correct object type (e.g., \Telegram\Bot\Objects\Update)
+                // as provided by $this->telegramService->getWebhookUpdate()
+                $updateHandler->processUpdate($update);
+            } catch (\Throwable $e) {
+                Log::error("Error in TelegramUpdateHandlerService: " . $e->getMessage()); // Simplified trace
             }
-        } elseif ($update === null && $this->telegramService->isInitialized()) {
-            // This case might mean getWebhookUpdate itself failed internally and logged it
-            Log::warning('Received null update from TelegramService, but service is initialized.');
+        } elseif ($this->telegramService->isInitialized()) {
+            Log::warning('ProductController::handleWebhook received no valid update from TelegramService.');
+        } else {
+            Log::error('ProductController::handleWebhook called but TelegramService is not initialized and no update obtained.');
         }
 
         return response('OK', 200);
     }
 }
+```
