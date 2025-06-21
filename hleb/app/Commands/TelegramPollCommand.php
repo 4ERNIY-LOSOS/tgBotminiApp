@@ -29,10 +29,10 @@ class TelegramPollCommand extends Task
      * Запускает long polling для получения обновлений от Telegram.
      * Эта строка будет описанием в списке команд.
      *
-     * Имя команды будет 'telegram:poll'.
-     * Пример запуска: php hleb/console telegram:poll
+     * Имя команды будет 'telegram-poll-command' (генерируется автоматически).
+     * Пример запуска: php hleb/console telegram-poll-command
      */
-    protected ?string $name = 'telegram:poll'; // Возвращаем явное имя команды
+    // protected ?string $name = 'telegram:poll'; // Убираем явное имя
 
     private ?TelegramService $telegramService = null;
     private ?TelegramUpdateHandlerService $updateHandler = null;

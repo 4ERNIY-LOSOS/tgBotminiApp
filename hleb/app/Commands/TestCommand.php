@@ -7,13 +7,13 @@ use Hleb\Base\Task;
 
 class TestCommand extends Task
 {
-    protected ?string $name = 'test:hello'; // Возвращаем явное имя команды
+    // protected ?string $name = 'test:hello'; // Убираем явное имя, Hleb сгенерирует 'test-command'
 
     /**
      * Простая тестовая команда для проверки регистрации команд.
      * Эта строка будет описанием в списке команд.
      *
-     * Пример запуска: php hleb/console test:hello
+     * Пример запуска: php hleb/console test-command
      *
      * @return int Код завершения команды.
      */
