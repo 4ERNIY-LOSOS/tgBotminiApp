@@ -7,24 +7,20 @@ use Hleb\Base\Task;
 
 class TestCommand extends Task
 {
+    protected ?string $name = 'test:hello'; // Возвращаем явное имя команды
+
     /**
-     * Имя консольной команды.
+     * Простая тестовая команда для проверки регистрации команд.
+     * Эта строка будет описанием в списке команд.
+     *
      * Пример запуска: php hleb/console test:hello
+     *
+     * @return int Код завершения команды.
      */
-    protected ?string $name = 'test:hello';
-
-    /**
-     * Описание команды, будет отображаться в списке команд.
-     */
-    protected string $description = 'Простая тестовая команда для проверки регистрации команд.';
-
-    /**
-     * Выполнение команды.
-     */
-    public function execute(): int
+    protected function run(): int
     {
         $this->output('Привет от TestCommand!');
-        $this->output('Эта команда успешно зарегистрирована и выполнена.');
+        $this->output('Эта команда успешно зарегистрирована и выполнена (если вы это видите).');
         return self::SUCCESS_CODE;
     }
 }

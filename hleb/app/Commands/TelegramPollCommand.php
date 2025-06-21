@@ -23,14 +23,16 @@ class TelegramPollCommand extends Task
      *
      * @description Starts polling Telegram for bot updates.
      */
-    protected string $description = "Starts polling Telegram for bot updates.";
+    // protected string $description = "Starts polling Telegram for bot updates."; // Удалено, описание будет из PHPDoc метода run()
 
     /**
-     * The name of the console command.
-     * If not specified, it will be generated automatically from the class name.
-     * // Example: php console telegram:poll
+     * Запускает long polling для получения обновлений от Telegram.
+     * Эта строка будет описанием в списке команд.
+     *
+     * Имя команды будет 'telegram:poll'.
+     * Пример запуска: php hleb/console telegram:poll
      */
-    protected ?string $name = 'telegram:poll'; // Custom command name
+    protected ?string $name = 'telegram:poll'; // Возвращаем явное имя команды
 
     private ?TelegramService $telegramService = null;
     private ?TelegramUpdateHandlerService $updateHandler = null;
@@ -83,18 +85,23 @@ class TelegramPollCommand extends Task
     }
 
     /**
-     * Выполняет консольную команду.
+     * Запускает long polling для получения обновлений Telegram.
+     * Эта строка будет использована как описание команды в списке.
+     * Имя команды будет 'telegram-poll-command' (автоматически из имени класса).
+     * Пример запуска: php hleb/console telegram-poll-command
+     *
+     * @return int Код завершения команды.
      */
-    public function execute(): int
+    protected function run(): int
     {
-        Log::info("TelegramPollCommand: Запуск команды execute()...");
+        Log::info("TelegramPollCommand: Запуск команды run()...");
         $this->output("Запуск Telegram long polling...");
 
         if (!$this->initServices()) {
             Log::error("TelegramPollCommand: Инициализация сервисов не удалась. Команда прервана.");
             return self::ERROR_CODE;
         }
-        Log::info("TelegramPollCommand: Сервисы успешно инициализированы для execute().");
+        Log::info("TelegramPollCommand: Сервисы успешно инициализированы для run().");
 
         // Опционально: сначала очистить все ожидающие веб-хуки (важно при переключении с веб-хука)
         // В идеале это должна быть одноразовая операция при развертывании бота для опроса.
