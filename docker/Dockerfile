@@ -3,7 +3,7 @@ FROM php:8.2-fpm
 COPY ./root /root
 COPY ./src /src
 
-WORKDIR /root
+WORKDIR /hleb/
 
 RUN  apt update \
   && apt install -y \

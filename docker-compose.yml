@@ -41,7 +41,7 @@ services:
     volumes:
       - ./hleb:/hleb # Access to the hleb console script and application code
       - ./log:/log   # For any logs the command might produce directly
-    command: ["sh", "-c", "php /hleb/console project-setup-task --clear && php /hleb/console telegram:poll"]
+    command: ["php", "/hleb/console", "--list"]
     restart: unless-stopped
     depends_on:
       php:
