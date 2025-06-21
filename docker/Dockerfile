@@ -21,4 +21,9 @@ RUN  apt update \
   && docker-php-ext-install pdo_mysql \
   && docker-php-ext-install gd \
   && mkdir -p /log && chmod -R 777 /log \
+  && mkdir -p /hleb/storage/cache \
+  && mkdir -p /hleb/storage/framework/views \
+  && mkdir -p /hleb/storage/logs \
+  && mkdir -p /hleb/storage/sessions \
+  && chmod -R 777 /hleb/storage \
   && php /src/change-entrypoint.php
