@@ -1,85 +1,47 @@
-# HLEB2
+# Директория `hleb`
 
-[![HLEB LOGO](https://raw.githubusercontent.com/phphleb/hleb/61b20d9135d372c610bb38a49ad383aa5a069964/public/images/logo.png)](https://github.com/phphleb/hleb)
+Директория `hleb/` является сердцем вашего PHP-приложения, построенного на микрофреймворке Hleb. Здесь находится вся основная логика приложения, конфигурационные файлы, публичные ресурсы и точки входа для обработки веб-запросов. При разработке Telegram-бота и Mini App для интернет-магазина, большинство ваших модификаций и нового кода (если разрешено создание новых файлов согласно структуре, описанной в основном `README.md` проекта) будет происходить именно внутри этой директории.
 
-## PHP Framework
+## Ключевые файлы в корне `hleb/`:
 
-[![version](https://poser.pugx.org/phphleb/hleb/v)](https://packagist.org/packages/phphleb/hleb)
-[![Total Downloads](https://poser.pugx.org/phphleb/hleb/downloads)](https://packagist.org/packages/phphleb/hleb)
-[![License: MIT](https://img.shields.io/badge/License-MIT%20(Free)-brightgreen.svg)](https://github.com/phphleb/hleb/blob/master/LICENSE)
-![PHP](https://img.shields.io/badge/PHP-^8.2-blue)
-[![build](https://github.com/phphleb/framework/actions/workflows/build.yml/badge.svg?event=push)](https://github.com/phphleb/framework/actions/workflows/build.yml)
+*   **`composer.json` / `composer.lock`**:
+    *   **Назначение:** Файлы управления зависимостями PHP с использованием Composer. `composer.json` определяет, какие библиотеки нужны вашему проекту (например, сам фреймворк Hleb, PHP Telegram Bot SDK, другие вспомогательные пакеты). `composer.lock` фиксирует точные версии установленных пакетов для обеспечения консистентности сборок.
+    *   **Для бота:** Сюда вы добавите зависимость от выбранного PHP Telegram Bot SDK и других необходимых библиотек (например, для работы с API платежных систем, если это будет частью бэкенда).
 
+*   **`console`**:
+    *   **Назначение:** Исполняемый файл для запуска консольных команд Hleb. Позволяет выполнять различные задачи, такие как миграции базы данных (если поддерживается), очистка кэша, запуск пользовательских команд.
+    *   **Для бота:** Вы можете создавать собственные консольные команды для административных задач бота, например, для установки вебхука Telegram, отправки тестовых уведомлений или выполнения фоновых задач, связанных с магазином (например, обновление статусов заказов).
 
-A distinctive feature of the framework **HLEB2** is the minimalism of the code and the speed of work.
-The choice of this framework allows you to launch a full-fledged product with minimal time costs and appeals to [documentation](https://hleb2framework.ru); it is easy, simple and fast.
-At the same time, it solves typical tasks, such as routing, shifting actions to controllers, model support, so, the basic MVC implementation.
-This is the very minimum you need to quickly launch an application.
+*   **`.php-cs-fixer.php`**:
+    *   **Назначение:** Конфигурационный файл для PHP Coding Standards Fixer. Помогает поддерживать единый стиль кода во всем проекте.
 
-Supports PHP 8.2+
+*   **`readme.md`**:
+    *   **Назначение:** Стандартный файл `readme.md` от самого фреймворка Hleb. Содержит информацию о фреймворке. (Не путать с основным `README.md` вашего проекта или теми `README.md`, которые вы создаете в подпапках).
 
-Basic features of the framework:
+## Основные поддиректории и их роль для бота:
 
-+ Standard use or asynchronous (RoadRunner, Swoole)
-+ MVC(ADR) or modular development
-+ PSR support
-+ Original router
-+ Service container
-+ Events
-+ Logging
-+ Dependency injection
-+ Caching
-+ Console commands
-+ Class autoloader (optional)
-+ Twig template engine (optional)
-+ Debug panel
-+ Creating an [API](https://github.com/phphleb/api-multitool)
-+ [Registration module](https://github.com/phphleb/hlogin)
-+ [Mutexes](https://github.com/phphleb/conductor)
-+ [Admin panel](https://github.com/phphleb/adminpan)
+*   **`app/`**:
+    *   **Назначение:** Содержит основную бизнес-логику вашего приложения: контроллеры, модели, сервисы, команды и т.д.
+    *   **Для бота:** Это основная директория, где будет размещаться PHP-код вашего Telegram-бота и бэкенда для Mini App. Здесь (или в ее поддиректориях, таких как `app/Shop/`) будут находиться контроллеры для обработки вебхуков и API-запросов, сервисы для бизнес-логики (управление товарами, корзиной, заказами), модели для взаимодействия с БД. (См. отдельный `hleb/app/README.md` для деталей).
 
-An additional [plugin](https://plugins.jetbrains.com/plugin/25645-hleb2) for the framework with integration into PhpStorm IDE.
+*   **`config/`**:
+    *   **Назначение:** Хранит конфигурационные файлы приложения Hleb.
+    *   **Для бота:** Сюда вы добавите конфигурационные файлы, специфичные для вашего магазина и Telegram-бота (например, `shop.php`, `telegram.php`), где будут определены настройки, такие как токен бота, ключи API, настройки платежных систем и т.д., часто загружаемые из переменных окружения (`.env`). (См. отдельный `hleb/config/README.md`).
 
-The framework code has been thoroughly [tested](https://github.com/phphleb/tests).
+*   **`public/`**:
+    *   **Назначение:** Публично доступная директория (document root вашего веб-сервера). Содержит `index.php` (единую точку входа для всех HTTP-запросов), а также статические активы (CSS, JavaScript, изображения).
+    *   **Для бота:** Здесь будет размещена директория для статических файлов вашего Mini App (например, `public/shop_mini_app/`), включая `index.html`, CSS, JS и изображения Mini App.
 
-Installation
------------------------------------
-To start the framework HLEB2
-1. Download the folder with the project from its original location.
+*   **`resources/`**:
+    *   **Назначение:** Может содержать различные ресурсы, такие как шаблоны представлений (views), языковые файлы и т.д.
+    *   **Для бота:** Если ваша админ-панель или какие-то части магазина (не Mini App) будут использовать серверный рендеринг HTML через Hleb, то шаблоны (например, для Twig или нативные PHP-шаблоны) могут находиться в `resources/views/`.
 
-Using Composer:
-```bash
-$ composer create-project phphleb/hleb
-```
-2. Assign the address of the resource to the "public" subdirectory.
-3. Establish the rights to allow changes for web server for the "storage" folder and all folders and files within it.
+*   **`routes/`**:
+    *   **Назначение:** Определяет маршрутизацию HTTP-запросов к соответствующим контроллерам и методам. Основной файл – `map.php`.
+    *   **Для бота:** В `routes/map.php` вы добавите маршруты для обработки вебхуков от Telegram, API-эндпоинты для взаимодействия с Mini App, а также маршруты для админ-панели магазина.
 
+*   **`vendor/`**:
+    *   **Назначение:** Содержит все зависимости проекта, установленные через Composer, включая сам фреймворк Hleb и другие библиотеки (например, Telegram Bot SDK). Эту директорию обычно не изменяют вручную и не добавляют в систему контроля версий (если используется `.gitignore`).
+    *   **Для бота:** Важно понимать, что здесь будут находиться исходные коды используемых библиотек.
 
-Customization
------------------------------------
-
-Files with project settings are located in the `config` folder of the installed project.
-
-Attention! Initially in the file `/config/common.php`
-(in the absence of `/config/common-local.php`)
-the **debug** setting is set to _true_.
-This means that debug mode is active, which needs to be disabled for a public project.
-
-Greetings
------------------------------------
-Project routes are assigned by the developer in the file “/routes/map.php”.
-
-```php
-Route::get('/', 'Hello, world!');
-```
-
-Instructions for use
------------------------------------
-
-[Link to documentation](https://hleb2framework.ru) 
-
-The documentation site was created using the HLEB2 framework.
-
-----------------------
-
-[![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Use%20a%20fast%20and%20simple%20PHP%207-8%20microframework&url=https://github.com/phphleb/hleb&via=phphleb&hashtags=php8.2,framework,developers)  [![Telegram](https://img.shields.io/badge/-Telegram-black?color=white&logo=telegram&style=social)](https://t.me/phphleb)
+Разработка вашего Telegram-бота и Mini App будет тесно связана с файлами и папками внутри `hleb/`. Понимание их назначения поможет вам эффективно структурировать и развивать ваш проект.
