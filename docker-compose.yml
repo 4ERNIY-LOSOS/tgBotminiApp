@@ -41,7 +41,7 @@ services:
     volumes:
       - ./hleb:/hleb # Access to the hleb console script and application code
       - ./log:/log   # For any logs the command might produce directly
-    command: ["sh", "-c", "composer dump-autoload -o -d /hleb/ && php /hleb/console telegram:poll"]
+    command: ["sh", "-c", "composer dump-autoload -o -d /hleb/ && php /hleb/console --clear-cache=all && echo '--- HLEB COMMANDS LIST AFTER CACHE CLEAR ---' && php /hleb/console --list"]
     restart: unless-stopped
     depends_on:
       php:
