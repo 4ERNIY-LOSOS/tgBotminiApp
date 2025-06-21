@@ -35,105 +35,132 @@ class TelegramPollCommand extends Task
     private ?TelegramService $telegramService = null;
     private ?TelegramUpdateHandlerService $updateHandler = null;
     private int $offset = 0;
-    private const POLLING_TIMEOUT = 30; // Seconds for long polling timeout
-    private const LOOP_SLEEP = 1; // Seconds to sleep if no updates or on error, before retrying
+    private const POLLING_TIMEOUT = 30; // Секунды для таймаута long polling
+    private const LOOP_SLEEP = 1;       // Секунды для ожидания при отсутствии обновлений или при ошибке перед повторной попыткой
+    private const ERROR_LOOP_SLEEP = 5; // Секунды для ожидания при ошибке
 
     /**
-     * Initializes services.
-     * It's better if Hleb's DI container can inject these,
-     * but direct instantiation is also possible if services are simple or singletons.
-     * For console commands, constructor injection might not be standard.
-     * We can try to get them from the container or instantiate directly.
+     * Инициализирует сервисы.
+     * Лучше, если DI-контейнер Hleb сможет их внедрить,
+     * но прямое создание экземпляров также возможно, если сервисы простые или являются синглтонами.
+     * Для консольных команд внедрение через конструктор может быть не стандартным.
+     * Можно попытаться получить их из контейнера или создать напрямую.
      */
     private function initServices(): bool
     {
+        Log::info("TelegramPollCommand: Попытка инициализации сервисов...");
         if ($this->telegramService && $this->updateHandler) {
+            Log::info("TelegramPollCommand: Сервисы уже инициализированы.");
             return true;
         }
         try {
-            // Attempt to get from container if available, or instantiate directly
-            // This is a simplified approach. A proper service locator or DI might be better.
-            $this->telegramService = new TelegramService(); // Assumes TelegramService has a simple constructor or is a singleton managed by itself
+            Log::info("TelegramPollCommand: Инициализация TelegramService...");
+            $this->telegramService = new TelegramService();
 
             if (!$this->telegramService->isInitialized()) {
-                Log::error("TelegramPollCommand: TelegramService could not be initialized. Check token and SDK setup.");
-                $this->output("Error: TelegramService could not be initialized. Check logs.");
+                Log::error("TelegramPollCommand: TelegramService не удалось инициализировать. Проверьте токен и настройки SDK.");
+                $this->output("Ошибка: TelegramService не удалось инициализировать. См. логи.");
                 return false;
             }
+            Log::info("TelegramPollCommand: TelegramService успешно инициализирован.");
 
+            Log::info("TelegramPollCommand: Инициализация TelegramUpdateHandlerService...");
             $this->updateHandler = new TelegramUpdateHandlerService($this->telegramService);
+            Log::info("TelegramPollCommand: TelegramUpdateHandlerService успешно инициализирован.");
+            Log::info("TelegramPollCommand: Все сервисы успешно инициализированы.");
             return true;
         } catch (Throwable $e) {
-            Log::error("TelegramPollCommand: Failed to initialize services: " . $e->getMessage());
-            $this->output("Error: Failed to initialize services. " . $e->getMessage());
+            Log::error(sprintf(
+                "TelegramPollCommand: Не удалось инициализировать сервисы: %s (Тип: %s) в файле %s на строке %d",
+                $e->getMessage(),
+                get_class($e),
+                $e->getFile(),
+                $e->getLine()
+            ));
+            $this->output("Ошибка: Не удалось инициализировать сервисы. " . $e->getMessage());
             return false;
         }
     }
 
     /**
-     * Execute the console command.
+     * Выполняет консольную команду.
      */
     public function execute(): int
     {
-        $this->output("Starting Telegram long polling...");
+        Log::info("TelegramPollCommand: Запуск команды execute()...");
+        $this->output("Запуск Telegram long polling...");
+
         if (!$this->initServices()) {
+            Log::error("TelegramPollCommand: Инициализация сервисов не удалась. Команда прервана.");
             return self::ERROR_CODE;
         }
+        Log::info("TelegramPollCommand: Сервисы успешно инициализированы для execute().");
 
-        // Optional: Clear any pending webhooks first (important if switching from webhook)
-        // This should ideally be a one-time operation when deploying the polling bot.
-        // Can be done manually via curl or a separate command.
-        // For now, we assume webhook is already cleared or not conflicting.
-        // Example: try { $this->telegramService->getSdk()->deleteWebhook(); $this->output("Webhook cleared."); } catch (Throwable $e) { $this->output("Could not clear webhook: " . $e->getMessage()); }
+        // Опционально: сначала очистить все ожидающие веб-хуки (важно при переключении с веб-хука)
+        // В идеале это должна быть одноразовая операция при развертывании бота для опроса.
+        // Можно сделать вручную через curl или отдельной командой.
+        // Пока предполагаем, что веб-хук уже очищен или не конфликтует.
+        // Пример: try { $this->telegramService->getSdk()->deleteWebhook(); $this->output("Веб-хук очищен."); } catch (Throwable $e) { $this->output("Не удалось очистить веб-хук: " . $e->getMessage()); }
 
-
-        while (true) { // Infinite loop for continuous polling
+        Log::info("TelegramPollCommand: Вход в основной цикл опроса...");
+        while (true) { // Бесконечный цикл для непрерывного опроса
             try {
-                if (!$this->telegramService->isInitialized()) {
-                    // This check is a bit redundant if initServices worked, but good for safety in a long loop
-                    Log::error("TelegramPollCommand: TelegramService not initialized in loop. Attempting to re-initialize.");
-                    if (!$this->initServices()) { // Try to re-initialize
-                        $this->output("Attempted to re-initialize services but failed. Sleeping before retry...");
-                        sleep(self::LOOP_SLEEP * 5); // Longer sleep if re-init fails
+                if (!$this->telegramService || !$this->telegramService->isInitialized()) {
+                    Log->error("TelegramPollCommand: TelegramService не инициализирован в цикле. Попытка повторной инициализации...");
+                    if (!$this->initServices()) {
+                        $this->output("Попытка повторной инициализации сервисов не удалась. Ожидание перед повтором...");
+                        Log::error("TelegramPollCommand: Повторная инициализация не удалась. Ожидание " . self::ERROR_LOOP_SLEEP . " сек.");
+                        sleep(self::ERROR_LOOP_SLEEP);
                         continue;
                     }
+                    Log::info("TelegramPollCommand: Повторная инициализация сервисов в цикле прошла успешно.");
                 }
 
-                // Fetch updates using long polling
-                // The SDK's getUpdates method should handle long polling.
-                // The 'timeout' parameter tells Telegram to keep the connection open.
+                Log::debug("TelegramPollCommand: Запрос обновлений с offset: " . $this->offset . ", timeout: " . self::POLLING_TIMEOUT);
                 $updates = $this->telegramService->getSdk()->getUpdates([
                     'offset' => $this->offset,
                     'timeout' => self::POLLING_TIMEOUT,
                 ]);
+                Log::debug("TelegramPollCommand: Получено " . count($updates) . " обновлений.");
 
                 if (!empty($updates)) {
+                    Log::info("TelegramPollCommand: Обработка " . count($updates) . " обновлений...");
                     foreach ($updates as $update) {
                         if ($update instanceof Update) {
-                            $this->output("Processing update ID: " . $update->getUpdateId());
+                            $updateId = $update->getUpdateId();
+                            Log::info("TelegramPollCommand: Обработка обновления ID: " . $updateId);
+                            $this->output("Обработка обновления ID: " . $updateId);
                             $this->updateHandler->processUpdate($update);
-                            $this->offset = $update->getUpdateId() + 1; // Important: update offset
+                            $this->offset = $updateId + 1;
+                            Log::debug("TelegramPollCommand: Новый offset: " . $this->offset);
                         } else {
-                            Log::warning("Received an update that is not an instance of Telegram Bot SDK Update object.");
+                            Log::warning("TelegramPollCommand: Получено обновление, не являющееся объектом Telegram Bot SDK Update.");
                         }
                     }
                 } else {
-                    // No updates received during this poll, just loop again.
-                    // $this->output("No updates in this poll."); // Can be too verbose
+                     Log::debug("TelegramPollCommand: Обновлений нет в этом цикле опроса.");
+                    // $this->output("Обновлений нет в этом цикле опроса."); // Может быть слишком многословно
                 }
             } catch (Throwable $e) {
-                Log::error("TelegramPollCommand: Error during polling loop: " . $e->getMessage() . "\nTrace: " . $e->getTraceAsString());
-                $this->output("Error during polling: " . $e->getMessage() . ". Sleeping before retry...");
-                // Wait a bit before retrying to avoid spamming in case of persistent errors
-                sleep(self::LOOP_SLEEP * 5);
+                Log::error(sprintf(
+                    "TelegramPollCommand: Ошибка в цикле опроса: %s (Тип: %s) в файле %s на строке %d\nТрассировка: %s",
+                    $e->getMessage(),
+                    get_class($e),
+                    $e->getFile(),
+                    $e->getLine(),
+                    $e->getTraceAsString()
+                ));
+                $this->output("Ошибка во время опроса: " . $e->getMessage() . ". Ожидание перед повтором...");
+                sleep(self::ERROR_LOOP_SLEEP);
             }
-            // Optional: Add a small sleep here if you want to reduce CPU usage when there are no updates,
-            // though long polling timeout should handle most of the waiting.
+            // Опционально: небольшая задержка для снижения нагрузки на ЦП, если нет обновлений,
+            // хотя таймаут long polling должен обрабатывать большую часть ожидания.
             // sleep(self::LOOP_SLEEP);
         }
 
-        // This part of the code will not be reached due to the infinite loop.
-        // $this->output("Telegram long polling stopped.");
+        // Эта часть кода не будет достигнута из-за бесконечного цикла.
+        // Log::info("TelegramPollCommand: Опрос Telegram остановлен.");
+        // $this->output("Опрос Telegram остановлен.");
         // return self::SUCCESS_CODE;
     }
 }
