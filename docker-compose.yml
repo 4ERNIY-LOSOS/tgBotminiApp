@@ -41,7 +41,7 @@ services:
     volumes:
       - ./hleb:/hleb # Access to the hleb console script and application code
       - ./log:/log   # For any logs the command might produce directly
-    command: ["sh", "-c", "composer dump-autoload -o -d /hleb/ && php /hleb/console --list"]
+    command: ["sh", "-c", "echo 'Listing /hleb/app/:' && ls -la /hleb/app/ && echo 'Listing /hleb/app/Commands/:' && ls -la /hleb/app/Commands/ && echo 'Running composer dump-autoload:' && composer dump-autoload -o -d /hleb/ && echo 'Running Hleb console list:' && php /hleb/console --list"]
     restart: unless-stopped
     depends_on:
       php:
