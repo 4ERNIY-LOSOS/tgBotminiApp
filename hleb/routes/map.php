@@ -13,3 +13,10 @@
  */
 
 Route::get('/', view('default'))->name('homepage');
+
+// API для Mini App
+Route::group('/api/miniapp/v1', function() {
+    // Маршрут для получения списка продуктов
+    Route::get('/products', [App\Shop\Product\Controllers\ProductController::class, 'listForMiniApp'])->name('miniapp.products');
+    // Сюда можно добавлять другие маршруты API для Mini App
+});

@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace App\Shop\Common\Services;
 
-// We will need to ensure TelegramService is correctly set up to use the SDK
-// and that this Update object type hint is correct for irazasyed/telegram-bot-sdk v3.x
-// It's typically Telegram\Bot\Objects\Update
+// Нам нужно убедиться, что TelegramService корректно настроен для использования SDK,
+// и что тип объекта Update указан правильно для irazasyed/telegram-bot-sdk v3.x
+// Обычно это Telegram\Bot\Objects\Update
 use Telegram\Bot\Objects\Update;
-use Hleb\Static\Log;
+use Hleb\Static\Log; // Фасад логирования Hleb
 
 class TelegramUpdateHandlerService
 {
@@ -19,9 +19,9 @@ class TelegramUpdateHandlerService
     }
 
     /**
-     * Processes a single Telegram update.
+     * Обрабатывает одно обновление от Telegram.
      *
-     * @param \Telegram\Bot\Objects\Update $update The update object from Telegram.
+     * @param \Telegram\Bot\Objects\Update $update Объект обновления от Telegram.
      * @return void
      */
     public function processUpdate(Update $update): void
@@ -31,47 +31,31 @@ class TelegramUpdateHandlerService
             $chatId = $message->getChat()->getId();
             $text = $message->getText();
 
-            Log::info("Processing message from chat_id: " . $chatId . "; text: " . $text);
+            Log::info("Обработка сообщения от chat_id: " . $chatId . "; текст: " . $text);
 
             if ($text === '/start') {
                 $this->handleStartCommand($chatId);
             }
-            // TODO: Add more command/message handlers here
+            // TODO: Добавить обработчики для других команд/сообщений
         } elseif ($update->getCallbackQuery()) {
-            // TODO: Handle callback queries
+            // TODO: Обработать callback-запросы (нажатия на inline-кнопки)
         }
-        // TODO: Add handlers for other update types
+        // TODO: Добавить обработчики для других типов обновлений
     }
 
+    /**
+     * Обрабатывает команду /start.
+     * Отправляет приветственное сообщение.
+     *
+     * @param int $chatId ID чата.
+     */
     private function handleStartCommand(int $chatId): void
     {
-        $miniAppUrl = config('telegram.mini_app_base_url');
-
-        if (empty($miniAppUrl)) {
-            // Simplified log message to avoid potential unicode escape issues in subtask
-            Log::warning('Mini App URL is not configured in .env. Cannot send WebApp button.');
-            $this->telegramService->sendMessage([
-                'chat_id' => $chatId,
-                // Simplified text to avoid issues with complex strings in this subtask
-                'text' => 'Бот работает! Добро пожаловать! Mini App URL не настроен.'
-            ]);
-        } else {
-            $finalMiniAppUrl = rtrim($miniAppUrl, '/') . '/shop_mini_app/';
-
-            $replyMarkup = [
-                'inline_keyboard' => [
-                    [
-                        ['text' => '🛍️ Открыть Магазин (Mini App)', 'web_app' => ['url' => $finalMiniAppUrl]]
-                    ]
-                ]
-            ];
-
-            $this->telegramService->sendMessage([
-                'chat_id' => $chatId,
-                'text' => 'Бот работает! Добро пожаловать!',
-                'reply_markup' => json_encode($replyMarkup)
-            ]);
-        }
+        Log::info("Выполнение handleStartCommand для chat_id: " . $chatId);
+        $this->telegramService->sendMessage([
+            'chat_id' => $chatId,
+            'text' => 'Бот работает! Добро пожаловать!'
+        ]);
     }
 }
 ```
