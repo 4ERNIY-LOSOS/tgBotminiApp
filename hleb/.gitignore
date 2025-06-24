@@ -1,6 +1,7 @@
 # phpstorm project files
 /.idea
 /.idea/*
+/vendor/
 
 # visualstudio files
 /.vscode
@@ -40,4 +41,3 @@ Thumbs.db
 # Composer authentication credentials
 auth.json
 
-/vendor/
