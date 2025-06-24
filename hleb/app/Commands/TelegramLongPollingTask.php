@@ -32,6 +32,11 @@ class TelegramLongPollingTask extends Task
      */
     public function execute(): int
     {
+        ini_set('display_errors', '1');
+        ini_set('display_startup_errors', '1');
+        error_reporting(E_ALL);
+        $this->comment('PHP error reporting is ON for TelegramLongPollingTask');
+
         $this->comment('Starting Telegram Bot Long Polling...');
 
         try {
@@ -41,7 +46,7 @@ class TelegramLongPollingTask extends Task
             $token = $_ENV['TELEGRAM_BOT_TOKEN'] ?? getenv('TELEGRAM_BOT_TOKEN');
 
             if (!$token) {
-                $this->error('TELEGRAM_BOT_TOKEN not found in environment variables.');
+                $this->error('Error: TELEGRAM_BOT_TOKEN not found in environment variables. in ' . __FILE__ . ' on line ' . __LINE__);
                 return 1; // Error
             }
 
@@ -82,7 +87,8 @@ class TelegramLongPollingTask extends Task
                         }
                     }
                 } catch (Throwable $e) {
-                    $this->error('Error in polling loop: ' . $e->getMessage());
+                    $this->error('Error: ' . $e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine());
+                    $this->comment("Trace: " . $e->getTraceAsString());
                     // Wait a bit before retrying to avoid spamming in case of persistent errors
                     sleep(10);
                 }
@@ -90,7 +96,8 @@ class TelegramLongPollingTask extends Task
                 usleep(500000); // 0.5 seconds
             }
         } catch (Throwable $e) {
-            $this->error('Failed to initialize Telegram Bot: ' . $e->getMessage());
+            $this->error('Error: ' . $e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine());
+            $this->comment("Trace: " . $e->getTraceAsString());
             return 1; // Error
         }
 
