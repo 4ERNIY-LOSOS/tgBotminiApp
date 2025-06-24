@@ -12,6 +12,7 @@ RUN  apt update \
     libpng-dev \
     vim \
     nano \
+    supervisor \
   && curl -sS https://getcomposer.org/installer -o composer-setup.php \
   && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
   && chmod +x /root/*.sh \
@@ -20,4 +21,10 @@ RUN  apt update \
   && docker-php-ext-enable xdebug \
   && docker-php-ext-install pdo_mysql \
   && docker-php-ext-install gd \
-  && php /src/change-entrypoint.php
+  && php /src/change-entrypoint.php \
+  && mkdir -p /var/log/supervisor \
+  && mkdir -p /etc/supervisor/conf.d
+
+COPY ./supervisor.conf /etc/supervisor/conf.d/app.conf
+
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/app.conf"]
