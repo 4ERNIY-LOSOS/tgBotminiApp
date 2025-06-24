@@ -39,3 +39,5 @@ Thumbs.db
 
 # Composer authentication credentials
 auth.json
+
+/vendor/
