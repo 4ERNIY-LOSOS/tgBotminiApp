@@ -4,6 +4,6 @@
  * All service commands: php console --help
  */
 
-define('HLEB_PUBLIC_DIR', realpath(__DIR__ . '/public'));
+define('HLEB_PUBLIC_DIR', '/hleb/public'); // Используем прямой путь, так как realpath(__DIR__ . '/public') вызывал проблемы
 
 require realpath(__DIR__ . '/vendor/phphleb/framework/console.php');
